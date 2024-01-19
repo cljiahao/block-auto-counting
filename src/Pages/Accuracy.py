@@ -23,7 +23,7 @@ class Accuracy(readSettings):
         
     def initialize(self):
         self.setAcc, self.AccVar, self.Canva = {},{},{}
-        self.chipArea = float(self.chipSize["GJM02"]['L'])*float(self.chipSize["GJM02"]['W'])
+        # self.chipArea = float(self.chipSize["02"]['L'])*float(self.chipSize["02"]['W'])
 
     def win_config(self,Wscreen,Hscreen):
         self.root.title("Accuracy Check Window")
@@ -68,7 +68,7 @@ class Accuracy(readSettings):
             cv2.imwrite(imgfile,img)
 
     def process(self,imgArr,Wscreen,Hscreen,acc):
-        chip = "GJM02" if acc == "EQA" else "GJM03"
+        chip = "02" if acc == "EQA" else "03"
         baseimg, image, self.Defects = Process(self.root,imgArr,True,Wscreen,Hscreen,chip,acc=acc).res
         self.saveImg(baseimg,"acc",acc+"_"+datetime.today().strftime("%d-%m-%y"))
         img = PilImg.fromarray(cv2.cvtColor(image,cv2.COLOR_BGR2RGB))

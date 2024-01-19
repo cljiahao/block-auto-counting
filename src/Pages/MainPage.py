@@ -105,9 +105,11 @@ class MainWindow(readSettings):
         self.chipType.grid(row=0,column=1,columnspan=3,padx=(0,10),pady=5)
 
         accSel = StringVar(value=list(self.accuracy.keys())[0])
-        accdrop = OptionMenu(AccNChipFrame,accSel,*self.accuracy)
-        accdrop.config(width=int(self.Wscreen*0.015),height=int(self.Hscreen*0.0025),font=self.font['M'],anchor=CENTER)
-        accdrop.grid(row=0,column=4,columnspan=3,padx=(0,10),pady=5)
+        self.accdrop = OptionMenu(AccNChipFrame,accSel,*self.accuracy)
+        self.accdrop.config(width=int(self.Wscreen*0.015),height=int(self.Hscreen*0.0027),font=self.font['M'],anchor=CENTER,bg="#c6e2e9")
+        self.accdrop.grid(row=0,column=4,columnspan=3,padx=(0,10),pady=5)
+
+        accSel.trace('w',self.colorCB)
 
         # Buttons
         ####################################################################################################
@@ -120,10 +122,10 @@ class MainWindow(readSettings):
         accuracy = Button(buttonFrame, text="Accuracy", height=2, width=15, command=lambda: Accuracy(self.root,self.prepCam(),accSel.get(),self.Wscreen,self.Hscreen))
         accuracy.grid(row=0,column=1, padx=5, pady=3, sticky=S)
 
-        settings = Button(buttonFrame, text="Settings", height=2, width=15, command=lambda: Login(self.root,self.cap,self.Wscreen,self.Hscreen,self.light))
+        settings = Button(buttonFrame, text="Settings", height=2, width=15, command=lambda: Login(self.root,self.cap,self.Wscreen,self.Hscreen,self.light,accSel.get()))
         settings.grid(row=0, column=2, padx=5, pady=3, sticky=S)
 
-        snap = Button(buttonFrame, text="Snap", height=2, width=35, font='sans 15 bold', bg="#ecedcc", command=lambda: self.processImg(self.chipType.cget('text')))
+        snap = Button(buttonFrame, text="Snap", height=2, width=35, font='sans 15 bold', bg="#ecedcc", command=lambda: self.processImg(self.chipType.cget('text')[-2:],accSel.get()))
         snap.grid(row=1, column=0, columnspan=3, padx=10, pady=10, sticky=EW + S)
 
     ####################################################################################################
@@ -131,6 +133,12 @@ class MainWindow(readSettings):
     Functions Used for the Widgets Above
     """ 
     ####################################################################################################
+
+
+    def colorCB(self,name,index,mode):
+        if self.root.getvar(name) == "EQA": self.accdrop.config(bg="#c6e2e9") 
+        elif self.root.getvar(name) == "DMA": self.accdrop.config(bg="#fffdaf")
+        else: self.accdrop.config(bg="#c7ceea")
 
     # Checking Entry Boxes and Focus when criteria matches
     ####################################################################################################
@@ -205,12 +213,13 @@ class MainWindow(readSettings):
 
     # Process image and show to User
     ####################################################################################################
-    def processImg(self,chip):
-        if self.config['Trouble']: chip = 'GJM03'
+    def processImg(self,chip,mat):
+        if self.config['Trouble']: chip = '03'
+        for defName in self.defCode: self.defVar[defName].config(text="0")
         if self.chkEntry(True):
             try:
                 imgArr = self.prepCam()
-                baseimg, image, Defects = Process(self.root,imgArr,False,self.Wscreen,self.Hscreen,chip).res
+                baseimg, image, Defects = Process(self.root,imgArr,False,self.Wscreen,self.Hscreen,chip,mat).res
                 self.saveImg(baseimg,"block",self.lotNumberEdit.get()+"_"+datetime.today().strftime("%d-%m-%y_%H%M%S"))
                 img = PilImg.fromarray(cv2.cvtColor(image,cv2.COLOR_BGR2RGB))
                 img = img.resize((int(img.size[0]*0.75),int(img.size[1]*0.75)))
@@ -248,8 +257,7 @@ class MainWindow(readSettings):
         self.lotNumberEdit.focus()
         self.capture.config(image = "")
         self.chipType.config(text="ChipType",bg="#ecedcc")
-        for defName in self.defCode:
-            self.defVar[defName].config(text="0")
+        for defName in self.defCode: self.defVar[defName].config(text="0")
 
     # Saving Images 
     ####################################################################################################

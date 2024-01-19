@@ -23,34 +23,27 @@ class Process(Cali):
     Hscreen : str
         Providing Screen Size (Height) to Class.
     chip : bool / str (Optional)
-        Chip type (GJM02, GJM03, GJM15)
+        Chip type (02, 03, 15)
     acc : bool / str (Optional)
         Accuracy Block Selection (DMA, EQA)
     """
         
     def __init__(self,root,imgArr,accMode,Wscreen,Hscreen,chip=False,acc=False):
-        super().__init__(imgArr)
+        super().__init__(imgArr,acc)
         if self.error: return
-        self.initialize(chip,acc)
+        self.initialize(chip)
         self.main(root,accMode,Wscreen,Hscreen)
 
-    def initialize(self,chip,acc):
+    def initialize(self,chip):
         self.chip = chip
         self.colDict = {}
-        self.chipArea = 1
         for col in self.color.keys():
             if col == "Pin": continue
-            if chip:
-                self.chipArea = float(self.chipSize[chip]['L'])*float(self.chipSize[chip]['W'])
-                if chip in self.color[col]['chipType']:
-                    Col_LL = np.array([int(x) for x in self.color[col]['LL'].split(",")], dtype=np.uint8)
-                    Col_UL = np.array([int(y) for y in self.color[col]['UL'].split(",")], dtype=np.uint8)
-                    self.colDict[col] = {"LL" : Col_LL, "UL" : Col_UL}
-            else:
-                if col in self.accuracy[acc].keys():
-                    Col_LL = np.array([int(x) for x in self.color[col]['LL'].split(",")], dtype=np.uint8)
-                    Col_UL = np.array([int(y) for y in self.color[col]['UL'].split(",")], dtype=np.uint8)
-                    self.colDict[col] = {"LL" : Col_LL, "UL" : Col_UL}
+            self.chipArea = float(self.chipSize[chip]['L'])*float(self.chipSize[chip]['W'])
+            if chip in self.color[col]['chipType']:
+                Col_LL = np.array([int(x) for x in self.color[col]['LL'].split(",")], dtype=np.uint8)
+                Col_UL = np.array([int(y) for y in self.color[col]['UL'].split(",")], dtype=np.uint8)
+                self.colDict[col] = {"LL" : Col_LL, "UL" : Col_UL}
 
     def main(self,root,accMode,Wscreen,Hscreen):
         processImg = self.masking(self.image)

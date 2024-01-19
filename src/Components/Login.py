@@ -21,11 +21,11 @@ class Login(readSettings):
         Instantiate Lighting Component to pass to next Class
     """
         
-    def __init__(self,root,cap,Wscreen,Hscreen,light):
+    def __init__(self,root,cap,Wscreen,Hscreen,light,mat):
         super().__init__()
         self.root = Toplevel(root)
         self.win_config(Wscreen,Hscreen)
-        self.widgets(root,cap,Wscreen,light)
+        self.widgets(root,cap,Wscreen,light,mat)
         self.root.grab_set()
 
     def win_config(self,Wscreen,Hscreen):
@@ -36,7 +36,7 @@ class Login(readSettings):
         self.root.columnconfigure(index=1, weight=1)
         self.root.columnconfigure(index=4, weight=1)
 
-    def widgets(self,root,cap,Wscreen,light):
+    def widgets(self,root,cap,Wscreen,light,mat):
 
         # StringVars (used to retrieve input from entry)
         self.the_user = StringVar()
@@ -51,14 +51,14 @@ class Login(readSettings):
             Label(self.root,text=cred+' :',background='lightgrey').grid(row=i,column=1)
             self.LogEntry[cred].grid(row=i,column=2,columnspan=2)
         
-        Button(self.root,text="Login",command=lambda:self.check_login(root,cap,Wscreen,light)).grid(row=6,column=2,columnspan=2)
+        Button(self.root,text="Login",command=lambda:self.check_login(root,cap,Wscreen,light,mat)).grid(row=6,column=2,columnspan=2)
 
-    def check_login(self,root,cap,Wscreen,light):
+    def check_login(self,root,cap,Wscreen,light,mat):
 
         if self.the_user.get() == self.credentials['Username']:
             if self.the_pass.get() == self.credentials['Password']:
                 self.root.destroy()
-                Settings(root,cap,Wscreen,light)
+                Settings(root,cap,Wscreen,light,mat)
             else:
                 self.bad_pass.config(text="Password does not match")
                 self.bad_pass.grid(row=2, column=2, columnspan=2)

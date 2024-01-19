@@ -7,7 +7,7 @@ class readSettings(directory):
     Instantiate Settings in Project
     """
 
-    def __init__(self):
+    def __init__(self,mat="EQA"):
         super().__init__()
         with open('JSON/settings.json') as f:
             setData = json.load(f)
@@ -19,7 +19,7 @@ class readSettings(directory):
             self.chipSize = setData['Chip Size']
             self.accuracy = setData['Accuracy']
 
-        with open('JSON/misc.json') as g:
+        with open(f'JSON/{mat}misc.json') as g:
             miscData = json.load(g)
             self.miscData = miscData
             self.color = miscData['Color']

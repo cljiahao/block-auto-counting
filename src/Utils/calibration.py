@@ -15,8 +15,8 @@ class Cali(readSettings):
         Src input image
     """
 
-    def __init__(self,imgArr):
-        super().__init__()
+    def __init__(self,imgArr,mat):
+        super().__init__(mat)
         self._initialize()
         self._main(imgArr)
 

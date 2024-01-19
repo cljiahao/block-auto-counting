@@ -11,13 +11,13 @@ from PIL import Image, ImageTk
 from Utils.readSettings import readSettings
 
 class Settings(readSettings):
-    def __init__(self,root,cap,Wscreen,light):
-        super().__init__()
+    def __init__(self,root,cap,Wscreen,light,mat):
+        super().__init__(mat)
         self.light = light
         self.root = Toplevel(root)
         self.initialize(cap,Wscreen)
         self.win_config()
-        self.widgets()
+        self.widgets(mat)
         light.lightingOn()
         self.root.grab_set()
 
@@ -44,7 +44,7 @@ class Settings(readSettings):
         self.root.columnconfigure(2,weight=1)
         self.root.columnconfigure(3,weight=1)
 
-    def widgets(self):
+    def widgets(self,mat):
         # Frame Creation x 5 (Left: Video Frame, Center Top: TrackBar for Video Frame, Center Bottom: Misc Config, Right: Colour Ranges, Bottom right: Buttons)
         self.camFrame = Frame(self.root,highlightbackground='blue',highlightthickness=2)
         self.camFrame.grid(row=0,column=0,rowspan=2,sticky=NS)
@@ -249,7 +249,7 @@ class Settings(readSettings):
         btn6.grid(row=f+2,column=2,padx=10,pady=20,sticky=N)
 
         # Save Changes or No changes
-        Button(self.butFrame,text='Save Changes',width=self.length,command=lambda: self.save()).grid(row=0,column=0,padx=10,pady=(10,20),ipadx=10,ipady=5,sticky=E)
+        Button(self.butFrame,text='Save Changes',width=self.length,command=lambda: self.save(mat)).grid(row=0,column=0,padx=10,pady=(10,20),ipadx=10,ipady=5,sticky=E)
         Button(self.butFrame,text='No Changes',width=self.length,command=lambda: self.quit()).grid(row=0,column=1,padx=(10,0),pady=(10,20),ipadx=10,ipady=5,sticky=E)
 
         # Place image / Video frame into frame
@@ -387,7 +387,7 @@ class Settings(readSettings):
         else:
             pass
 
-    def save(self):
+    def save(self,mat):
         for col in self.color:
             self.miscData['Color'][col]['LL'] = self.colLL[col].cget('text')
             self.miscData['Color'][col]['UL'] = self.colUL[col].cget('text')
@@ -415,7 +415,7 @@ class Settings(readSettings):
             json.dump(self.setData,f,indent=4)
             f.truncate()
 
-        with open('JSON/misc.json',"w") as f:
+        with open(f'JSON/{mat}misc.json',"w") as f:
             f.seek(0)
             json.dump(self.miscData,f,indent=4)
             f.truncate()
