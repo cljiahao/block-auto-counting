@@ -31,7 +31,7 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT,1080)
 while True:
 
     _, img = cap.read()
-    img = img[800:950,400:600]
+    img = img[800:950,50:250]
     blank = np.zeros(img.shape[:2], np.uint8)
 
     pin = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)

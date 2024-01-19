@@ -9,7 +9,7 @@ high = ['High H','High S','High V']
 blurList = ['Blur','Median','Gaussian','Bilateral']
 cb = {}
 
-blurmethod = blurList[3]
+blurmethod = blurList[2]
 
 toBlur = True
 
@@ -52,7 +52,7 @@ while True:
 
     _, img = cap.read()
     img = img[:,int(1920/6):int(1920/6*5)]
-    img = img[800:950,50:250]
+    # img = img[800:950,50:250]
 
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV_FULL)
     bKer = cb['blur']+1 if cb['blur']%2 == 0 else cb['blur']

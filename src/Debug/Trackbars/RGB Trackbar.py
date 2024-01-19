@@ -51,6 +51,7 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT,1080)
 while True:
 
     _, img = cap.read()
+    img = img[:,int(1920/6):int(1920/6*5)]
     rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     bKer = cb['blur']+1 if cb['blur']%2 == 0 else cb['blur']
     blur = blurType(rgb) if toBlur else rgb

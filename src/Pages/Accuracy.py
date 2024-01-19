@@ -13,7 +13,7 @@ class Accuracy(readSettings):
         self.root = Toplevel(root)
         self.initialize()
         try:
-            self.process(image,Wscreen,Hscreen)
+            self.process(image,Wscreen,Hscreen,acc)
             self.win_config(Wscreen,Hscreen)
             self.widgets(acc,Wscreen,Hscreen)
             self.update()
@@ -27,7 +27,7 @@ class Accuracy(readSettings):
 
     def win_config(self,Wscreen,Hscreen):
         self.root.title("Accuracy Check Window")
-        self.root.geometry(f"{int(Wscreen*0.73)}x{int(Hscreen*0.80)}+50+20")
+        self.root.state('zoomed')
         self.frame = Frame(self.root)
         self.frame.pack(fill=BOTH, expand=True)
 
@@ -67,21 +67,21 @@ class Accuracy(readSettings):
             imgfile = os.path.join(imgdir,timestp+".png")
             cv2.imwrite(imgfile,img)
 
-    def process(self,imgArr,Wscreen,Hscreen):
-        baseimg, image, self.Defects = Process(self.root,imgArr,True,Wscreen,Hscreen).res
+    def process(self,imgArr,Wscreen,Hscreen,acc):
+        baseimg, image, self.Defects = Process(self.root,imgArr,True,Wscreen,Hscreen,acc=acc).res
         self.saveImg(baseimg,"acc",datetime.today().strftime("%d-%m-%y"))
         img = PilImg.fromarray(cv2.cvtColor(image,cv2.COLOR_BGR2RGB))
         img = img.resize((int(img.size[0]*0.65),int(img.size[1]*0.65)))
         self.imgtk = ImageTk.PhotoImage(image = img)
-        # self.saveImg(image,"acclog",datetime.today().strftime("%d-%m-%y_%H%M%S"))
+        # self.saveImg(image,"test",datetime.today().strftime("%d-%m-%y_%H%M%S"))
         
     def update(self):
-        sticker,black = int(self.tolerance['Sticker']), int(self.tolerance['Tape'])
+        sticker,tape = int(self.tolerance['Sticker']), int(self.tolerance['Tape'])
         for accApp in self.AccVar:
             self.AccVar[accApp].config(text=self.Defects[accApp])
             accCheck = int(self.setAcc[accApp].get())
             if accApp[-4:] == "Area":
-                if accApp[:5] == "Black": passfail = "green" if accCheck - black < int(self.Defects[accApp]) < accCheck + black else "red"
+                if "Tape" in accApp: passfail = "green" if accCheck - tape < int(self.Defects[accApp]) < accCheck + tape else "red"
                 else: passfail = "green" if accCheck - sticker < int(self.Defects[accApp]) < accCheck + sticker else "red"
             else: passfail = "green" if accCheck == int(self.Defects[accApp]) else "red"
 

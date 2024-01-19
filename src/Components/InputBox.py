@@ -12,6 +12,7 @@ class InputBox(readSettings):
         self.widget(text)
         self.num = Numpad(self.root,self.entry,Wscreen,Hscreen)
         self.root.grab_set()
+        self.root.mainloop()
 
     def initialize(self):
         self.inputVal = StringVar(self.root)
@@ -32,3 +33,4 @@ class InputBox(readSettings):
     def saveChange(self):
         # Destroy both Numpad and InputBox's Toplevel root
         self.root.destroy()
+        self.root.quit()

@@ -57,7 +57,7 @@ class Settings(readSettings):
         self.colourFrame = Frame(self.root,highlightbackground='blue',highlightthickness=2)
         self.colourFrame.grid(row=0,column=4,rowspan=2,padx=10,sticky=NS+EW)
         self.butFrame = Frame(self.root)
-        self.butFrame.grid(row=1,column=4,padx=10,sticky=S)
+        self.butFrame.grid(row=1,column=4,padx=10,sticky=NS)
 
         # Creation of Sliders / Trackbars
         instructions = 'Instructions:\nMove trackbar to achieve the correct HSV for each colour.\nRecord the range as HSV_Low and HSV_High range.\n\nExample - HSV_Low=0,0,0 and HSV_High=255,255,255\n'

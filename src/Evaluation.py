@@ -1,17 +1,22 @@
+
+import os
 import cv2
 import math
+import time
 import numpy as np
 import pandas as pd
 
-from Utils.calibration import Cali
-from Pages.OddSize import OddSize
+from Utils.readSettings import readSettings
 
-class Process(Cali):
-    def __init__(self,root,imgArr,accMode,Wscreen,Hscreen,chip=False,acc=False):
-        super().__init__(imgArr)
-        if self.error: return
+class Evaluation(readSettings):
+    def __init__(self,img,chip=False,acc=False):
+        super().__init__()
         self.initialize(chip,acc)
-        self.main(root,accMode,Wscreen,Hscreen)
+        image, self.avgPixLen =self.calibration(img)
+        resImg = self.masking(image)
+        stickers = self.findSticker(resImg.copy())
+        cnts, hier = cv2.findContours(stickers,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+        self.chipPixelCnt(resImg,cnts)
 
     def initialize(self,chip,acc):
         self.colDict = {}
@@ -30,11 +35,44 @@ class Process(Cali):
                     Col_UL = np.array([int(y) for y in self.color[col]['UL'].split(",")], dtype=np.uint8)
                     self.colDict[col] = {"LL" : Col_LL, "UL" : Col_UL}
 
-    def main(self,root,accMode,Wscreen,Hscreen):
-        processImg = self.masking(self.image)
-        stickers = self.findSticker(processImg.copy())
-        cnts, hier = cv2.findContours(stickers,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-        self.res = self.chipPixelCnt(root,processImg.copy(),cnts,accMode,Wscreen,Hscreen)
+    def calibration(self,img):
+        
+        pixArr = []
+        baseImg = img.copy()       
+        img = img[800:950,50:250]
+        gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+        blank = np.zeros(img.shape[:2], np.uint8)
+        
+        circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,2,20,param1=20,param2=60,minRadius=3,maxRadius=13)
+        # print(circles)
+        try:
+            for c in circles[0]:
+                cv2.circle(blank,(int(c[0]),int(c[1])),int(c[2]),(255,255,255),-1)
+
+            circleMask = cv2.bitwise_and(img,img,mask=blank)
+
+            cnts, _ = cv2.findContours(blank, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+
+            blur = cv2.GaussianBlur(circleMask, (5, 5), 0)
+            hsvimg = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV_FULL)
+            Black_LL = np.array([int(x) for x in self.color['Pin']['LL'].split(",")], dtype=np.uint8)
+            Black_UL = np.array([int(y) for y in self.color['Pin']['UL'].split(",")], dtype=np.uint8)
+            black = cv2.inRange(hsvimg,Black_LL,Black_UL)  
+
+            for c in cnts:
+                cntArea = cv2.contourArea(c)
+                # print(cntArea,np.sum(black))
+                if cntArea > 300 and np.sum(black)>10000:
+                    pixArr.append(cntArea)
+        except: pixArr.append("")
+        try :
+            NonEmptyArr = [x for x in pixArr if x!=""]
+            pixArea = max(set(NonEmptyArr), key = pixArr.count)
+
+            cali = ((int(self.config["Pin Size"])/2)**2*math.pi/pixArea)
+        except: cali = 0.05674842221079829
+
+        return baseImg, cali
 
     def masking(self,img):
 
@@ -77,6 +115,8 @@ class Process(Cali):
     def findSticker(self,Proimg):
         hsv = cv2.cvtColor(Proimg.copy(),cv2.COLOR_BGR2HSV_FULL)
         hsv = cv2.bilateralFilter(hsv,50,15,15)
+        # hsv = cv2.edgePreservingFilter(hsv,flags=1, sigma_s=60, sigma_r=0.4)
+        # hsv = cv2.detailEnhance(hsv, sigma_s=10, sigma_r=0.15)
         mix = np.zeros(Proimg.shape[:2], np.uint8)
 
         for color,colRange in self.colDict.items():
@@ -92,13 +132,13 @@ class Process(Cali):
                 cn,hi = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
                 for a,c in enumerate(cn):
                     colProcessed = np.zeros(thresh.shape[:2], np.uint8)
-                    if hi[0][a][2] == -1 and hi[0][a][3] == -1:
-                        # continue
-                        cv2.drawContours(colProcessed,[c],-1,color=(255,255,255),thickness=-1)
-                        colProcessed = cv2.dilate(colProcessed,None)
+                    # if hi[0][a][2] == -1 and hi[0][a][3] == -1:
+                    #     # continue
+                    #     cv2.drawContours(colProcessed,[c],-1,color=(255,255,255),thickness=-1)
+                    #     colProcessed = cv2.dilate(colProcessed,None)
                     # else:
-                    # 	cv2.drawContours(colProcessed,[c],-1,color=(255,255,255),thickness=-1)
-                    # 	colProcessed = cv2.dilate(colProcessed,None)
+                    cv2.drawContours(colProcessed,[c],-1,color=(255,255,255),thickness=-1)
+                    colProcessed = cv2.dilate(colProcessed,None)
                     mix = cv2.bitwise_or(mix,colProcessed)
 
         return cv2.morphologyEx(mix,cv2.MORPH_CLOSE,np.ones((3,3),np.uint8),iterations=3)
@@ -128,7 +168,7 @@ class Process(Cali):
                 else: Defects[defe] += 0
 
         return Defects, hasCol
-
+    
     def TextAdd(self,Fimg,length,cnt,pieces,Textadd):
         if Textadd:
             approx = cv2.approxPolyDP(cnt, 0.0001*cv2.arcLength(cnt, True), True)
@@ -147,32 +187,7 @@ class Process(Cali):
             # cv2.putText(Fimg,f"{pieces:.0f}", (n[-4]+5, n[-3]+30),cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 255, 255), 1)
             cv2.drawContours(Fimg,[approx],0,(255,255,255),1)
         return Fimg
-
-    def oddText(self,Bimg,cnt,M,a,type):
-
-        cX = int(M["m10"] / M["m00"])
-        cY = int(M["m01"] / M["m00"])
-        approx = cv2.approxPolyDP(cnt, 0.0001*cv2.arcLength(cnt, True), True)
-
-        cv2.putText(Bimg,str(a),(cX,cY),cv2.FONT_HERSHEY_COMPLEX, 1, self.highlight[type[-4:]], 1)
-        cv2.drawContours(Bimg,[approx],0,(255,255,255),1)
-
-        return Bimg
-
-    def normScan(self,Fimg,Bimg,preDef,oddDict,oddCol,Defects,length,cnt,pieces,Moments):
-
-        for Def in preDef:
-            if preDef[Def] > 0 and Def in Defects.keys(): Defects[Def] += pieces
-            Fimg = self.TextAdd(Fimg,length,cnt,pieces,self.config['Trouble'])
-
-        for Col,val in oddCol.items():
-            if Col[-4:] in self.highlight.keys() and val > 0:
-                if Col not in oddDict: oddDict[Col] = []
-                oddDict[Col].append(pieces)
-                Bimg = self.oddText(Bimg,cnt,Moments,len(oddDict[Col]),Col)
-
-        return Fimg,Bimg,oddDict,Defects
-
+    
     def accScan(self,Fimg,oddCol,Defects,cArea,cnt,value):
         for colName in oddCol:
             if oddCol[colName] > 0 and colName+"Area" in Defects.keys():
@@ -183,18 +198,14 @@ class Process(Cali):
         for colName in oddCol: Defects[colName+"Area"] = math.floor(Defects[colName+"Area"])
 
         return Fimg,Defects
-
-    def chipPixelCnt(self,root,Proimg,cnts,accMode,Wscreen,Hscreen):
+    
+    def chipPixelCnt(self,Proimg,cnts):
 
         Fimg = Proimg.copy()
-        Defects,oddDict = {},{}
-        if accMode:
-            for colo in self.colDict:
-                Defects[colo+"Num"] = 0
-                Defects[colo+"Area"] = 0
-        else:
-            for defe in self.defCode.keys(): Defects[defe] = 0
-            Bimg = Proimg.copy()
+        Defects = {}
+        for colo in self.colDict:
+            Defects[colo+"Num"] = 0
+            Defects[colo+"Area"] = 0
         blur = cv2.GaussianBlur(Proimg.copy(), (5, 5), 0)
         hsv = cv2.cvtColor(blur,cv2.COLOR_BGR2HSV_FULL)
 
@@ -202,20 +213,33 @@ class Process(Cali):
             cArea = cv2.contourArea(cnt)
             if 1000000<cArea or cArea<30: continue
 
-            Moments = cv2.moments(cnt)
             realsize = cArea*self.avgPixLen
             pieces = math.floor(realsize/self.chipArea)
             length = math.sqrt(realsize)
 
             preDef,oddCol = self.colorSort(hsv,cnt)
 
-            if accMode: Fimg,Defects = self.accScan(Fimg,oddCol,Defects,cArea,cnt,realsize)
-            else: Fimg,Bimg,oddDict,Defects = self.normScan(Fimg,Bimg,preDef,oddDict,oddCol,Defects,realsize,cnt,pieces,Moments)
-            # print(oddCol)
+            Fimg,Defects = self.accScan(Fimg,oddCol,Defects,cArea,cnt,realsize)
 
-        if bool([a for a in oddDict.values() if a !=[]]) and not accMode:
-            odd_def = OddSize(root,oddDict,Bimg,Wscreen,Hscreen).selected
-            for v in odd_def.values():
-                for key,value in v.items(): Defects[key] += value
+        print(Defects)
+        # print(round(cArea,0))
+        start = time.time()
+        while True:
+            cv2.namedWindow("Fimg",cv2.WINDOW_FREERATIO)
+            cv2.imshow("Fimg",Fimg)
+            k = cv2.waitKey(1) & 0xFF
+            if time.time() - start > 3:
+                break
 
-        return [self.image,Fimg,Defects]
+        # print(f'Calibration Pin: {self.avgPixLen:.4f} mm^2/pixel')
+
+        
+# path = r"C:\Users\MES21106\Desktop\Block Auto Count\Code\Main\acc\May23\DMA"
+path = r"C:\Users\MES21106\Desktop\Block Auto Count\Code\Main\block\May23\Eval 3-2\2350049100"
+
+for j,i in enumerate(os.listdir(path)):
+    print(f"Block {j+1}")
+    start = time.time()
+    Evaluation(cv2.imread(os.path.join(path,i)),chip='GJM03')
+    print(time.time()-start)
+    print("")

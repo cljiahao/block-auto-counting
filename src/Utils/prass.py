@@ -38,7 +38,7 @@ class PRASS(readSettings):
     def initialize(self,root,inData,Wscreen,Hscreen):
         self.path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),"prass",datetime.today().strftime("%b%y"))
         self.root = root
-        self.lotNum,self.mcNo,self.payRoll,self.inQty = inData
+        self.lotNum,self.mcNo,self.payRoll,self.inQty = inData #,self.blkWgt
         self.Wscreen,self.Hscreen=Wscreen,Hscreen
 
     # def win_config(self,Wscreen,Hscreen):

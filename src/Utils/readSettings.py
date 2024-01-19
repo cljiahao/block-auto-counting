@@ -24,5 +24,5 @@ class readSettings(directory):
         with open('JSON/staticnames.json') as h:
             namesData = json.load(h)
             self.defCode = namesData['Defect Code']
-            self.defBlack = namesData['Defect Black']
+            self.defTape = namesData['Defect Tape']
             self.defSticker = namesData['Defect Sticker']

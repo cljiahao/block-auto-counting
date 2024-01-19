@@ -36,28 +36,10 @@
         }
     },
     "Accuracy": {
-        "Acc1": {
+        "EQA": {
             "Silver": {
-                "Num": "4",
-                "Area": "63"
-            },
-            "Gold": {
                 "Num": "4",
                 "Area": "64"
-            },
-            "Rose Gold": {
-                "Num": "4",
-                "Area": "65"
-            },
-            "Black": {
-                "Num": "3",
-                "Area": "3428"
-            }
-        },
-        "Acc2": {
-            "Silver": {
-                "Num": "4",
-                "Area": "63"
             },
             "Gold": {
                 "Num": "4",
@@ -67,9 +49,27 @@
                 "Num": "4",
                 "Area": "66"
             },
-            "Black": {
+            "BlackTape": {
                 "Num": "3",
-                "Area": "3451"
+                "Area": "3844"
+            }
+        },
+        "DMA": {
+            "Green": {
+                "Num": "4",
+                "Area": "63"
+            },
+            "Gold": {
+                "Num": "4",
+                "Area": "63"
+            },
+            "Rose Gold": {
+                "Num": "4",
+                "Area": "65"
+            },
+            "RedTape": {
+                "Num": "3",
+                "Area": "3995"
             }
         }
     }

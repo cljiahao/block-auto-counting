@@ -29,7 +29,7 @@ def hist(img):
     # Bins is the number of bins you would like to divide the range into
     # If no range is provided, the range is between the min and max of list
     # For images, pixel value is from 0 to 255, thus 256 values
-    hist,bins = np.histogram(img.flatten(),256,[0,256])
+    hist,bins = np.histogram(img.copy().flatten(),256,[0,256])
     cumsum = hist.cumsum()                                                          # Cumulative Sum, always positive
     nonzero = np.ma.masked_equal(cumsum,0)                                          # Remove 0 elements in list
     equalize = (nonzero - nonzero.min())/(nonzero.max()-nonzero.min())*255          # Equalize elements in list that are higher in occurence
@@ -51,8 +51,8 @@ def CLAHE(img,clip):
 def blurType(img):
     if blurmethod == 'Blur': return cv2.blur(img, (bKer, bKer))
     elif blurmethod ==  'Median': return cv2.medianBlur(img, bKer)
-    elif blurmethod ==  'Gaussian': return cv2.GaussianBlur(img, (bKer, bKer), 3)
-    elif blurmethod ==  'Bilateral': return cv2.bilateralFilter(img, 9, bKer, bKer)
+    elif blurmethod ==  'Gaussian': return cv2.GaussianBlur(img, (bKer, bKer), 11)
+    elif blurmethod ==  'Bilateral': return cv2.bilateralFilter(img, 15, bKer, bKer)
 
 # Return Threshold types based on selection
 def thresType(img):
@@ -95,8 +95,8 @@ while True:
 
     _, img = cap.read()
     img = img[:,int(1920/6):int(1920/6*5)]
-    if contrast[0]: img = CLAHE(img,contrast[1])
-    if equalize: img = hist(img)
+    if contrast[0]: gray = CLAHE(img,contrast[1])
+    if equalize: gray = hist(img)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     bKer = cb['blur']+1 if cb['blur']%2 == 0 else cb['blur']
     blur = blurType(gray) if toBlur else gray

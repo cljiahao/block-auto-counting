@@ -64,8 +64,9 @@ class Cali(readSettings):
             img = img[800:950,50:250]
             gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
             blank = np.zeros(img.shape[:2], np.uint8)
-
+            
             circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,2,20,param1=20,param2=60,minRadius=3,maxRadius=13)
+            # print(circles)
             try:
                 for c in circles[0]:
                     cv2.circle(blank,(int(c[0]),int(c[1])),int(c[2]),(255,255,255),-1)
@@ -82,14 +83,15 @@ class Cali(readSettings):
 
                 for c in cnts:
                     cntArea = cv2.contourArea(c)
-                    print(cntArea,np.sum(black))
+                    # print(cntArea,np.sum(black))
                     if cntArea > 300 and np.sum(black)>10000:
                         pixArr.append(cntArea)
-            except: pass
+            except: pixArr.append("")
         
-        print(pixArr)
+        # print(pixArr)
         try: 
-            pixArea = max(set(pixArr), key = pixArr.count)
+            NonEmptyArr = [x for x in pixArr if x!=""]
+            pixArea = max(set(NonEmptyArr), key = pixArr.count)
             return False, imgArr[pixArr.index(pixArea)], pixArea
         except: 
             messagebox.showerror("Calibration Error","Imaging Issue. \nPlease Try Again.")

@@ -16,7 +16,6 @@ from Utils.saveExcel import Excel
 from Utils.readSettings import readSettings
 from Utils.imgProcess import Process
 
-
 class MainWindow(readSettings):
     def __init__(self,root):
         super().__init__()
@@ -190,18 +189,19 @@ class MainWindow(readSettings):
     def prepCam(self):
         imgArr = []
         if self.config['Trouble']:
+            imgArr.extend(["","",""])
             imgfile = os.path.join(self.troublePath,datetime.today().strftime("%d-%m-%y")+".png")
             imgArr.append(cv2.imread(imgfile))
         else:
             self.light.lightingOn()
             self.cap.release()                      # Takes 0.5 seconds to release
             self.camera()                           # Takes 1.5 seconds to start up videocapture
-            for i in range(12):                     # Takes 0.1 seconds to snap each shot per cycle range
+            for i in range(13):                     # Takes 0.1 seconds to snap each shot per cycle range
                 image = self.cap.read()[1]
                 imgArr.append(image[:,int(int(self.config['CamResWidth'])/6):int(int(self.config['CamResWidth'])/6*5)])
             self.light.lightingOff()
             
-        return imgArr[2:]
+        return imgArr[3:]
 
     # Process image and show to User
     ####################################################################################################
@@ -226,7 +226,9 @@ class MainWindow(readSettings):
 
                 Excel(self.filePath,self.defVar)
                 cv2.destroyAllWindows()
-            except: self.light.lightingOff()
+            except Exception as e: 
+                print(e)
+                self.light.lightingOff()
 
     # Open Summary Window to show Summary of Processed Images
     ####################################################################################################

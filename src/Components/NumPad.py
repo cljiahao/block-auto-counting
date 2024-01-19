@@ -28,7 +28,9 @@ class Numpad(readSettings):
             Button(self.root,text=i+1,width=self.WBut,height=self.HBut,command=lambda p = i+1: entry.insert(END,p)).grid(row=j,column=k,padx=10,pady=7)
     
         # Create "0" Button
-        Button(self.root,text=0,width=self.WBut*2,height=self.HBut,command=lambda: entry.insert(END,0)).grid(row=4,column=0,columnspan=2,pady=5)
+        Button(self.root,text=0,width=self.WBut,height=self.HBut,command=lambda: entry.insert(END,0)).grid(row=4,column=0,pady=5)
+        # Create "." Button
+        Button(self.root,text=".",width=self.WBut,height=self.HBut,command=lambda: entry.insert(END,".")).grid(row=4,column=1,pady=5)
         # Create "Del" Button
         Button(self.root,text="Del",width=self.WBut,height=self.HBut,command=lambda: entry.delete(entry.index("end") - 1)).grid(row=4,column=2,pady=5)
 

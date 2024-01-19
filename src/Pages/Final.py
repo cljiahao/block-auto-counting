@@ -12,7 +12,6 @@ class showFinal(readSettings):
         super().__init__()
         self.root = Toplevel(root)
         # self.initialize()
-        print(Wscreen,Hscreen)
         self.win_config(int(Wscreen),int(Hscreen))
         self.getPrass(lotNum,int(Wscreen),int(Hscreen))
         self.widgets(df,lotNum)

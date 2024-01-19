@@ -23,7 +23,7 @@ class OddSize(readSettings):
         self.frameHold, self.dropbox, self.config, self.selected ={},{},{},{}
 
     def win_config(self,Wscreen,Hscreen):
-        self.root.title("Black Sticker Window")
+        self.root.title("Tape Defect Window")
         self.root.geometry(f"{int(Wscreen*0.7)}x{int(Hscreen*0.9)}+30+10")
         self.frame = Frame(self.root)
         self.frame.columnconfigure(0,weight=1)
@@ -39,11 +39,11 @@ class OddSize(readSettings):
         btn_OddStick = Button(self.frame, text="Save Changes", font=self.font['M'], height=2, width=15, command=lambda: self.saveSelected(oddDict))
         btn_OddStick.grid(row=10, column=len(oddDict)*2, columnspan=2, pady=20, padx=10, sticky=NE)     
         
-        # Set up Black Sticker layout but not injected into Tkinter yet
+        # Set up Tape layout but not injected into Tkinter yet
         ##################################################################################################
         i = 1
         for key, value in oddDict.items():
-            if key in self.highlight.keys():
+            if key[-4:] in self.highlight.keys():
                 self.frameHold[key] = LabelFrame(self.frame,bd=5,relief=FLAT,text=key)
                 self.frameHold[key].grid(row=0, column=2*i, columnspan=2, ipadx=5, padx=5, pady=7, sticky=E)
                 i+=1
@@ -52,7 +52,7 @@ class OddSize(readSettings):
                     Label(self.frameHold[key], text=f"[{j+1}]").grid(row=j, column=0, pady=3, padx=10, sticky=W)
                     self.dropbox[key][j] = StringVar(self.frameHold[key])
                     self.dropbox[key][j].set(self.choose1)
-                    if key.lower() == "black":
+                    if "Tape" in key:
                         self.config[key][j] = OptionMenu(self.frameHold[key],self.dropbox[key][j],*self.defCode)
                         self.config[key][j].config(width=13)
                         self.config[key][j].grid(row=j, column=1, pady=3, sticky=W)
@@ -64,7 +64,7 @@ class OddSize(readSettings):
     def saveSelected(self,oddDict):
 
         for key, value in oddDict.items():
-            if key in self.highlight.keys():
+            if key[-4:] in self.highlight.keys():
                 self.selected[key] = {}
                 for k in range(len(value)):
                     if self.dropbox[key][k].get() in self.selected[key].keys(): self.selected[key][self.dropbox[key][k].get()] += oddDict[key][k]
