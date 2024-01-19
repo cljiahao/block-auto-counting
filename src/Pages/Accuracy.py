@@ -68,12 +68,13 @@ class Accuracy(readSettings):
             cv2.imwrite(imgfile,img)
 
     def process(self,imgArr,Wscreen,Hscreen,acc):
-        baseimg, image, self.Defects = Process(self.root,imgArr,True,Wscreen,Hscreen,acc=acc).res
-        self.saveImg(baseimg,"acc",datetime.today().strftime("%d-%m-%y"))
+        chip = "GJM02" if acc == "EQA" else "GJM03"
+        baseimg, image, self.Defects = Process(self.root,imgArr,True,Wscreen,Hscreen,chip,acc=acc).res
+        self.saveImg(baseimg,"acc",acc+"_"+datetime.today().strftime("%d-%m-%y"))
         img = PilImg.fromarray(cv2.cvtColor(image,cv2.COLOR_BGR2RGB))
         img = img.resize((int(img.size[0]*0.65),int(img.size[1]*0.65)))
         self.imgtk = ImageTk.PhotoImage(image = img)
-        # self.saveImg(image,"test",datetime.today().strftime("%d-%m-%y_%H%M%S"))
+        # self.saveImg(baseimg,"test",datetime.today().strftime("%d-%m-%y_%H%M%S"))
         
     def update(self):
         sticker,tape = int(self.tolerance['Sticker']), int(self.tolerance['Tape'])

@@ -2,6 +2,11 @@ import json
 from .directories import directory
 
 class readSettings(directory):
+
+    """
+    Instantiate Settings in Project
+    """
+
     def __init__(self):
         super().__init__()
         with open('JSON/settings.json') as f:

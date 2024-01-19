@@ -37,8 +37,20 @@
         "DEFORMED"
     ],
     "Defect Sticker": {
-        "Silver": "SMEARING",
-        "Gold": "RIDGENDENT",
-        "Rose Gold": "PATTERNDENT"
+        "GJM02": {
+            "Silver": "VPDENT",
+            "Gold": "RIDGENDENT",
+            "Rose Gold": "PATTERNDENT"
+        },
+        "GJM03": {
+            "Green": "SMEARING",
+            "Gold": "RIDGENDENT",
+            "Rose Gold": "PATTERNDENT"
+        },
+        "GJM15": {
+            "Green": "SMEARING",
+            "Gold": "RIDGENDENT",
+            "Rose Gold": "PATTERNDENT"
+        }
     }
 }

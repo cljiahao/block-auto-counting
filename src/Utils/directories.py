@@ -1,6 +1,11 @@
 import os
 
 class directory():
+
+    """
+    Instantiate Directories in Project
+    """
+
     def __init__(self):
         self.srcPath = os.path.dirname(os.path.dirname(__file__))
         self.basePath = os.path.dirname(self.srcPath)

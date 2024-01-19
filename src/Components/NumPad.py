@@ -3,6 +3,21 @@ from tkinter import *
 from Utils.readSettings import readSettings
 
 class Numpad(readSettings):
+    
+    """
+    Tkinter Component with One Entry Box
+    Parameters
+    ----------
+    root : root
+        The base root.
+    entry : Tkinter Component
+        Reference to Entry Box
+    Wscreen : str
+        Providing Screen Size (Width) to Class.
+    Hscreen : str
+        Providing Screen Size (Height) to Class.
+    """
+
     def __init__(self,root,entry,Wscreen,Hscreen):
         super().__init__()
         self.root = Toplevel(root)

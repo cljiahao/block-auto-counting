@@ -5,6 +5,14 @@ from tkinter import messagebox
 from Utils.readSettings import readSettings
 
 class Lighting(readSettings):
+        
+    """
+    Lighting Component to connect and execute the Controller
+    Parameters
+    ----------
+    Based from settings
+    """
+        
     def __init__(self):
         super().__init__()
 

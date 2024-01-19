@@ -4,6 +4,23 @@ from Utils.readSettings import readSettings
 from Pages.Settings import Settings
 
 class Login(readSettings):
+        
+    """
+    Tkinter Component with Simple Login Page
+    Parameters
+    ----------
+    root : root
+        The base root.
+    cap : VideoCapture
+        Returns a tuple (success, frame)
+    Wscreen : str
+        Providing Screen Size (Width) to Class.
+    Hscreen : str
+        Providing Screen Size (Height) to Class.
+    light : Lighting Component
+        Instantiate Lighting Component to pass to next Class
+    """
+        
     def __init__(self,root,cap,Wscreen,Hscreen,light):
         super().__init__()
         self.root = Toplevel(root)

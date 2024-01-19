@@ -1,10 +1,11 @@
 import os
 from tkinter import *
 from openpyxl import *
+from tkinter import messagebox
 from tkinter.ttk import Separator
 
 from Utils.readSettings import readSettings
-from Utils.prass import PRASS
+from Utils.prePrass import prePRASS
 
 class Summary(readSettings):
     def __init__(self,root,inData,filePath,Wscreen,Hscreen):
@@ -79,7 +80,7 @@ class Summary(readSettings):
                     Button(self.dataCont, text="x", font=self.font['S'], height=1, width=2, bg="#fa6464", command= lambda i=i: self.delete(ws, wb, i,root)).grid(row=maxrow+1,column=i,pady=5,padx=15,sticky=S)
                     Label(self.dataCont, font=self.font['S'], text="Block "+str(i)).grid(row=0,column=i,pady=1,padx=15,sticky=E)
                 else:
-                    Button(self.dataCont, text="Confirm", font=self.font['S'], width=10, bg="#3085d6", command=lambda: self.sendPRASS()).grid(row=maxrow+1,column=i,pady=5,padx=15,sticky=W)
+                    Button(self.dataCont, text="Confirm", font=self.font['S'], width=10, bg="#3085d6", command=lambda: self.createPRASS()).grid(row=maxrow+1,column=i,pady=5,padx=15,sticky=W)
 
                 for j in range(maxrow):
                     exText = str(ws.cell(row=j+1,column=i+1).value)
@@ -91,7 +92,7 @@ class Summary(readSettings):
         self.root.destroy()
         self.reset(root)
 
-    def sendPRASS(self,):
-        self.res = PRASS(self.root,self.inData,self.filePath,self.Wscreen,self.Hscreen).res
+    def createPRASS(self):
+        self.res = prePRASS(self.root,self.Wscreen,self.Hscreen,self.inData,self.filePath).res
         self.root.destroy()
         self.root.quit()

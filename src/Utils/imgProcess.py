@@ -7,6 +7,27 @@ from Utils.calibration import Cali
 from Pages.OddSize import OddSize
 
 class Process(Cali):
+        
+    """
+    Utils for Image Processing
+    Parameters
+    ----------
+    root : root
+        The base root.
+    imgArr : list
+        Array of Images captured by VideoCapture
+    accMode : bool
+        Toggle between Accuracy mode or Normal mode
+    Wscreen : str
+        Providing Screen Size (Width) to Class.
+    Hscreen : str
+        Providing Screen Size (Height) to Class.
+    chip : bool / str (Optional)
+        Chip type (GJM02, GJM03, GJM15)
+    acc : bool / str (Optional)
+        Accuracy Block Selection (DMA, EQA)
+    """
+        
     def __init__(self,root,imgArr,accMode,Wscreen,Hscreen,chip=False,acc=False):
         super().__init__(imgArr)
         if self.error: return
@@ -14,6 +35,7 @@ class Process(Cali):
         self.main(root,accMode,Wscreen,Hscreen)
 
     def initialize(self,chip,acc):
+        self.chip = chip
         self.colDict = {}
         self.chipArea = 1
         for col in self.color.keys():
@@ -122,7 +144,7 @@ class Process(Cali):
         hasCol = hasCol.fromkeys(hasCol,0)
         hasCol[maxKey] = maxVal
 
-        for colo,defe in self.defSticker.items():
+        for colo,defe in self.defSticker[self.chip].items():
             for i in hasCol:
                 if colo == i: Defects[defe] += hasCol[i]
                 else: Defects[defe] += 0

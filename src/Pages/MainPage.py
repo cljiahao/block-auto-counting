@@ -206,7 +206,7 @@ class MainWindow(readSettings):
     # Process image and show to User
     ####################################################################################################
     def processImg(self,chip):
-        if self.config['Trouble']: chip = 'GJM02'
+        if self.config['Trouble']: chip = 'GJM03'
         if self.chkEntry(True):
             try:
                 imgArr = self.prepCam()

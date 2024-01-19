@@ -4,6 +4,21 @@ from .NumPad import Numpad
 from Utils.readSettings import readSettings
 
 class InputBox(readSettings):
+        
+    """
+    Tkinter Component with One Entry Box
+    Parameters
+    ----------
+    root : root
+        The base root.
+    text : str
+        Reference Name for Entry Box
+    Wscreen : str
+        Providing Screen Size (Width) to Class.
+    Hscreen : str
+        Providing Screen Size (Height) to Class.
+    """
+        
     def __init__(self,root,text,Wscreen,Hscreen):
         super().__init__()
         self.root = Toplevel(root)
