@@ -1,0 +1,170 @@
+{
+    "Config": {
+        "LightIPv4": "192.168.0.2",
+        "LightPORT": "40001",
+        "QtyWeb": "http://163.50.34.215:58087/mesapps/webservices/api/pts0001/checkLotRegistration/data?lotNo=",
+        "fileServer": "http://163.50.33.28/uploads/faupload.php?p=thermal_release",
+        "PRASS": "http://163.50.34.40:8080/prass/jsp/monitor/ProgressDisplayViewer.jsp?dsn=orMesPRASS&Referer=http://163.50.34.40:8080/prass/jsp/shintyoku/index.jsp"
+    },
+    "Credentials": {
+        "Username": "ME",
+        "Password": "pass"
+    },
+    "Misc": {
+        "Trouble": false,
+        "Sleep": "3",
+        "Pin Size": "5",
+        "Lighting": "50",
+        "CamResWidth": "1920",
+        "CamResHeight": "1080"
+    },
+    "Tolerance": {
+        "GJM02": {
+            "Sticker": "5",
+            "Tape": "400"
+        },
+        "GJM03": {
+            "Sticker": "",
+            "Tape": ""
+        },
+        "GJM15": {
+            "Sticker": "",
+            "Tape": ""
+        }
+    },
+    "font": {
+        "S": [
+            "Calibri",
+            8
+        ],
+        "normal": [
+            "Calibri",
+            10
+        ],
+        "L": [
+            "Calibri",
+            15
+        ]
+    },
+    "staticName": {
+        "defCode": {
+            "LOUT": "U1",
+            "WOUT": "U2",
+            "DEFORMED": "U3",
+            "BLUNTCUT": "U4",
+            "ROUGHCUT": "U5",
+            "SLANTCUT": "U6",
+            "LSHIFT": "U7",
+            "WSHIFT": "U8",
+            "STEPSHIFT": "U9",
+            "VPDENT": "UA",
+            "SMEARING": "UB",
+            "PARTIALPRINT": "UC",
+            "SHEETNG": "UD",
+            "RIDGENDENT": "UE",
+            "BROKENBLADE": "UF",
+            "PATTERNDENT": "UK",
+            "LINE": "UL",
+            "DRAGGING": "UR",
+            "ELECTRODEHORN": "US",
+            "CUTDEBRIS": "UT",
+            "OTHERS": "O1",
+            "DROPCHIP": "I1",
+            "SAMPLE": "L1"
+        },
+        "black_Def": [
+            "LOUT",
+            "WOUT",
+            "LSHIFT",
+            "WSHIFT",
+            "STEPSHIFT",
+            "OTHERS",
+            "BLUNTCUT",
+            "SLANTCUT",
+            "ROUGHCUT",
+            "DEFORMED"
+        ]
+    },
+    "Highlight": {
+        "Black": [
+            0,
+            255,
+            255
+        ]
+    },
+    "colours": {
+        "Silver": {
+            "LL": "0,0,157",
+            "UL": "255,10,255"
+        },
+        "Gold": {
+            "LL": "24,13,155",
+            "UL": "35,255,255"
+        },
+        "Rose Gold": {
+            "LL": "0,11,154",
+            "UL": "23,255,255"
+        },
+        "Black": {
+            "LL": "0,1,80",
+            "UL": "255,255,105"
+        }
+    },
+    "Chip Size": {
+        "GJM02": {
+            "L": "0.428",
+            "W": "0.216"
+        },
+        "GJM03": {
+            "L": "",
+            "W": ""
+        },
+        "GJM15": {
+            "L": "",
+            "W": ""
+        }
+    },
+    "Accuracy": {
+        "Acc1": {
+            "Silver": {
+                "Num": "4",
+                "Chips": "682"
+            },
+            "Gold": {
+                "Num": "4",
+                "Chips": "692"
+            },
+            "Rose Gold": {
+                "Num": "4",
+                "Chips": "703"
+            },
+            "Black": {
+                "Num": "3",
+                "Chips": "37080"
+            }
+        },
+        "Acc2": {
+            "Silver": {
+                "Num": "4",
+                "Chips": "682"
+            },
+            "Gold": {
+                "Num": "4",
+                "Chips": "682"
+            },
+            "Rose Gold": {
+                "Num": "4",
+                "Chips": "714"
+            },
+            "Black": {
+                "Num": "3",
+                "Chips": "37329"
+            }
+        }
+    },
+    "fixedDef": {
+        "Silver": "SMEARING",
+        "Gold": "RIDGENDENT",
+        "Rose Gold": "PATTERNDENT"
+    }
+}
