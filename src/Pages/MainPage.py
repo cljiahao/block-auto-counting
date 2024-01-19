@@ -1,6 +1,5 @@
 import os
 import cv2
-import time
 import requests
 from tkinter import *
 from datetime import datetime
@@ -134,7 +133,6 @@ class MainWindow(readSettings):
     """ 
     ####################################################################################################
 
-
     def colorCB(self,name,index,mode):
         if self.root.getvar(name) == "EQA": self.accdrop.config(bg="#c6e2e9") 
         elif self.root.getvar(name) == "DMA": self.accdrop.config(bg="#fffdaf")
@@ -214,7 +212,7 @@ class MainWindow(readSettings):
     # Process image and show to User
     ####################################################################################################
     def processImg(self,chip,mat):
-        if self.config['Trouble']: chip = '03'
+        if self.config['Trouble']: chip = "02" if mat == "EQA" else "03" if mat == "DMA" else "15"
         for defName in self.defCode: self.defVar[defName].config(text="0")
         if self.chkEntry(True):
             try:

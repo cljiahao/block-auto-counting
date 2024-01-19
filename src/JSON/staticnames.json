@@ -39,18 +39,18 @@
     "Defect Sticker": {
         "02": {
             "Silver": "SMEARING",
-            "Gold": "RIDGENDENT",
-            "Rose Gold": "PATTERNDENT"
+            "Rose Gold": "RIDGENDENT",
+            "Gold": "PATTERNDENT"
         },
         "03": {
             "Green": "SMEARING",
-            "Gold": "RIDGENDENT",
-            "Rose Gold": "PATTERNDENT"
+            "Rose Gold": "RIDGENDENT",
+            "Gold": "PATTERNDENT"
         },
         "15": {
             "Green": "SMEARING",
-            "Gold": "RIDGENDENT",
-            "Rose Gold": "PATTERNDENT"
+            "Rose Gold": "RIDGENDENT",
+            "Gold": "PATTERNDENT"
         }
     }
 }

@@ -12,14 +12,14 @@ class Accuracy(readSettings):
         super().__init__()
         self.root = Toplevel(root)
         self.initialize()
-        try:
-            self.process(image,Wscreen,Hscreen,acc)
-            self.win_config(Wscreen,Hscreen)
-            self.widgets(acc,Wscreen,Hscreen)
-            self.update()
-            self.root.grab_set()
-        except:
-            self.root.destroy()
+        # try:
+        self.process(image,Wscreen,Hscreen,acc)
+        self.win_config(Wscreen,Hscreen)
+        self.widgets(acc,Wscreen,Hscreen)
+        self.update()
+        self.root.grab_set()
+        # except:
+        #     self.root.destroy()
         
     def initialize(self):
         self.setAcc, self.AccVar, self.Canva = {},{},{}
@@ -68,7 +68,7 @@ class Accuracy(readSettings):
             cv2.imwrite(imgfile,img)
 
     def process(self,imgArr,Wscreen,Hscreen,acc):
-        chip = "02" if acc == "EQA" else "03"
+        chip = "02" if acc == "EQA" else "03" if acc =="DMA" else "15"
         baseimg, image, self.Defects = Process(self.root,imgArr,True,Wscreen,Hscreen,chip,acc=acc).res
         self.saveImg(baseimg,"acc",acc+"_"+datetime.today().strftime("%d-%m-%y"))
         img = PilImg.fromarray(cv2.cvtColor(image,cv2.COLOR_BGR2RGB))

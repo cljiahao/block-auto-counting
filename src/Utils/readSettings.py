@@ -22,6 +22,7 @@ class readSettings(directory):
         with open(f'JSON/{mat}misc.json') as g:
             miscData = json.load(g)
             self.miscData = miscData
+            self.factor = miscData['Factor']
             self.color = miscData['Color']
             self.font = miscData['Font']
             self.highlight = miscData['Highlight']

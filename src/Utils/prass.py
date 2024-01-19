@@ -1,11 +1,13 @@
 import os
+import requests
 import pandas as pd
 from datetime import datetime
+from tkinter import messagebox
 
 from .readSettings import readSettings
 from Pages.Final import showFinal
 
-class prePRASS(readSettings):
+class PRASS(readSettings):
 
     """
     Open Lot File, extract and clean data, summarise and send to PRASS.
@@ -27,17 +29,17 @@ class prePRASS(readSettings):
 
     def __init__(self,root,inData,filePath,Wscreen,Hscreen):
         super().__init__()
-        self.initialize(root,Wscreen,Hscreen,inData)
+        self.initialize(root,inData,Wscreen,Hscreen)
         # self.win_config()
         # self.widgets()
         self.Sum_Data(filePath)
+        # self.root.grab_set()
         
-    def initialize(self,root,Wscreen,Hscreen,inData):
-        self.root = root
-        self.Wscreen,self.Hscreen = Wscreen,Hscreen
+    def initialize(self,root,inData,Wscreen,Hscreen):
         self.path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),"prass",datetime.today().strftime("%b%y"))
-        if not os.path.exists(self.path): os.makedirs(self.path)
-        self.lotNum,self.mcNo,self.payRoll,self.inQty = inData
+        self.root = root
+        self.lotNum,self.mcNo,self.payRoll,self.inQty = inData #,self.blkWgt
+        self.Wscreen,self.Hscreen=Wscreen,Hscreen
 
     # def win_config(self,Wscreen,Hscreen):
 
@@ -46,6 +48,8 @@ class prePRASS(readSettings):
     # Data Cleanup and Summation of Data
     ####################################################################################################
     def Sum_Data(self,filePath):
+        prasspath = os.path.join(self.prassPath,os.path.split(os.path.dirname(filePath))[-1])
+        if not os.path.exists(prasspath): os.makedirs(prasspath)
 
         df = pd.read_excel(filePath, header=None)
         df = df[:].reset_index(drop=True).set_index(df.columns[0])
@@ -59,7 +63,6 @@ class prePRASS(readSettings):
     # Create file spec format for sending to PRASS
     ####################################################################################################
     def create_PRASS(self,df):
-
         newdf = df.drop(columns=df.columns[0:-1])
         newdf.loc["Output"] = int(self.inQty) - int(newdf.loc['Total Defects','Total'])
 
@@ -81,10 +84,40 @@ class prePRASS(readSettings):
         # File Spec to follow
         pData = f"{self.lotNum}|{self.mcNo}|{self.payRoll}|{date}|{time}|{self.inQty}|{newdf.loc['Output','Total']}|{prassDef}"
 
-        with open(os.path.join(self.path,f'{self.lotNum}.txt'), 'w') as f: f.write(pData)
+        self.send_PRASS(pData,newdf)
 
-        self.showFinal(newdf)
+    # Sending txt file to PRASS
+    ####################################################################################################
+    def send_PRASS(self,pData,newdf):
+        self.res = messagebox.askyesno(title="Send Data To PRASS", message="Confirm Send Data?")
+        if self.res:
+            if not self.config['Trouble']:
+                try:
+                    with open(os.path.join(self.path,f'{self.lotNum}.txt'), 'w') as f:
+                        f.write(pData)
 
-    def showFinal(self,newdf):
-        if not self.config['Trouble']: self.res = showFinal(self.root,newdf,self.Wscreen,self.Hscreen,self.lotNum).res
-        else: self.res = showFinal(self.root,newdf,self.Wscreen,self.Hscreen).res
+                    # To send via FTP
+                    """
+                    with FTP("163.50.33.28","s8pc","prasspc") as ftp:
+                    ftp.cwd('/fa/thermal_release/')
+                    file = open(os.path.join(self.path,f'{self.lotNumb}.txt'),'rb')
+                    ftp.storbinary(f'STOR {self.lotNumb}.txt',file)
+                    file.close()
+                    ftp.quit()
+                    """
+
+                    # To Send via HTTP
+                    files = {'file': open(os.path.join(self.path,f'{self.lotNum}.txt'), 'rb')}
+                    resp = requests.post(self.address["fileServer"], files=files)
+
+                    print(f"fileSize: {int(resp.content)}")
+                    # Request OK, bring up website and final quantity for final cross check
+                    # if resp.ok:
+                    if int(resp.content) == os.stat(os.path.join(self.path,f'{self.lotNum}.txt')).st_size:
+                        self.res = showFinal(self.root,newdf,self.Wscreen,self.Hscreen,self.lotNum).res
+                except Exception as e:
+                    messagebox.showwarning(title="Error while sending",message="File not sent to PRASS. Contact ME.") 
+                    print(e)
+            else:
+                print("Sending to PRASS")
+                self.res = showFinal(self.root,newdf,self.Wscreen,self.Hscreen).res

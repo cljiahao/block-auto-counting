@@ -5,7 +5,7 @@ from tkinter import messagebox
 from tkinter.ttk import Separator
 
 from Utils.readSettings import readSettings
-from Utils.prePrass import prePRASS
+from Utils.prass import PRASS
 
 class Summary(readSettings):
     def __init__(self,root,inData,filePath,Wscreen,Hscreen):
@@ -93,6 +93,6 @@ class Summary(readSettings):
         self.reset(root)
 
     def createPRASS(self):
-        self.res = prePRASS(self.root,self.Wscreen,self.Hscreen,self.inData,self.filePath).res
+        self.res = PRASS(self.root,self.inData,self.filePath,self.Wscreen,self.Hscreen).res
         self.root.destroy()
         self.root.quit()

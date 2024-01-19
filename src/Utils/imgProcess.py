@@ -48,6 +48,7 @@ class Process(Cali):
     def main(self,root,accMode,Wscreen,Hscreen):
         processImg = self.masking(self.image)
         stickers = self.findSticker(processImg.copy())
+        if not accMode: stickers = cv2.dilate(stickers,np.ones((self.factor[self.chip],self.factor[self.chip]),np.uint8))
         cnts, hier = cv2.findContours(stickers,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
         self.res = self.chipPixelCnt(root,processImg.copy(),cnts,accMode,Wscreen,Hscreen)
 
@@ -117,6 +118,7 @@ class Process(Cali):
                     mix = cv2.bitwise_or(mix,colProcessed)
 
         return cv2.morphologyEx(mix,cv2.MORPH_CLOSE,np.ones((3,3),np.uint8),iterations=3)
+
 
     def colorSort(self,hsv,cnt):
 

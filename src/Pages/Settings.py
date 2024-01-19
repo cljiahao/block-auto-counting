@@ -332,9 +332,9 @@ class Settings(readSettings):
 
     def modify(self,tab,btn,var=0):
 
-        if tab == 'Config':
+        if tab == 'Address':
             if self.confSel.get() == self.setTxt: return
-        elif tab == 'Misc':
+        elif tab == 'Config':
             if self.figSel.get() == self.setTxt: return
         elif tab == 'Chip Size':
             if self.chipSel.get() == self.setTxt: return
