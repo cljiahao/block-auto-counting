@@ -1,93 +1,111 @@
 {
-    "Address": {
-        "LightIPv4": "192.168.0.2",
-        "LightPORT": "40001",
-        "QtyWeb": "http://163.50.34.215:58087/mesapps/webservices/api/pts0001/checkLotRegistration/data?lotNo=",
-        "fileServer": "http://163.50.33.28/uploads/faupload.php?p=thermal_release",
-        "PRASS": "http://163.50.34.40:8080/prass/jsp/monitor/ProgressDisplayViewer.jsp?dsn=orMesPRASS&Referer=http://163.50.34.40:8080/prass/jsp/shintyoku/index.jsp"
-    },
-    "Credentials": {
-        "Username": "ME",
-        "Password": "pass"
-    },
-    "Config": {
-        "Trouble": false,
-        "Pin Size": "5",
-        "Lighting": "20",
-        "CamResWidth": "1920",
-        "CamResHeight": "1080"
-    },
-    "Tolerance": {
-        "Sticker": "5",
-        "Tape": "400"
-    },
-    "Chip Size": {
-        "02": {
-            "L": "0.428",
-            "W": "0.216"
+    "Settings": {
+        "Address": {
+            "LightIPv4": "192.168.0.2",
+            "LightPORT": "40001",
+            "QtyWeb": "http://163.50.34.215:58087/mesapps/webservices/api/pts0001/checkLotRegistration/data?lotNo=",
+            "fileServer": "http://163.50.33.28/uploads/faupload.php?p=thermal_release",
+            "PRASS": "http://163.50.34.40:8080/prass/jsp/monitor/ProgressDisplayViewer.jsp?dsn=orMesPRASS&Referer=http://163.50.34.40:8080/prass/jsp/shintyoku/index.jsp"
         },
-        "03": {
-            "L": "0.680",
-            "W": "0.340"
-        },
-        "15": {
-            "L": "1.126",
-            "W": "0.570"
-        }
-    },
-    "Accuracy": {
-        "EQA": {
-            "Silver": {
-                "Num": "4",
-                "Area": "64"
+        "Credentials": {
+            "ME": {
+                "Username": "me",
+                "Password": "pass",
+                "Superuser": true
             },
-            "Gold": {
-                "Num": "4",
-                "Area": "63"
-            },
-            "Rose Gold": {
-                "Num": "4",
-                "Area": "66"
-            },
-            "BlackTape": {
-                "Num": "3",
-                "Area": "3844"
+            "Prod": {
+                "Username": "prod",
+                "Password": "pass",
+                "Superuser": false
             }
         },
-        "DMA": {
-            "Green": {
-                "Num": "4",
-                "Area": "63"
+        "Troubleshoot": {
+            "Trouble": false,
+            "File Name": ""
+        },
+        "Config": {
+            "Pin Size": "5",
+            "Lighting": "20",
+            "CamResWidth": "1920",
+            "CamResHeight": "1080"
+        },
+        "Tolerance": {
+            "Percentage": "0.1"
+        },
+        "Chip": {
+            "02": {
+                "Factor": "1",
+                "L": "0.428",
+                "W": "0.216"
             },
-            "Gold": {
-                "Num": "4",
-                "Area": "63"
+            "03": {
+                "Factor": "3",
+                "L": "0.680",
+                "W": "0.340"
             },
-            "Rose Gold": {
-                "Num": "4",
-                "Area": "65"
-            },
-            "RedTape": {
-                "Num": "3",
-                "Area": "3995"
+            "15": {
+                "Factor": "4",
+                "L": "1.126",
+                "W": "0.570"
             }
         },
-        "ERA": {
-            "Green": {
-                "Num": "4",
-                "Area": "62"
+        "Accuracy": {
+            "EQA": {
+                "Color": "#c6e2e9",
+                "Silver": {
+                    "Num": "4",
+                    "Area": "64"
+                },
+                "Gold": {
+                    "Num": "4",
+                    "Area": "63"
+                },
+                "Rose Gold": {
+                    "Num": "4",
+                    "Area": "66"
+                },
+                "Black Tape": {
+                    "Num": "3",
+                    "Area": "3844"
+                }
             },
-            "Gold": {
-                "Num": "4",
-                "Area": "64"
+            "DMA": {
+                "Color": "#fffdaf",
+                "Green": {
+                    "Num": "4",
+                    "Area": "63"
+                },
+                "Gold": {
+                    "Num": "4",
+                    "Area": "63"
+                },
+                "Rose Gold": {
+                    "Num": "4",
+                    "Area": "65"
+                },
+                "Red Tape": {
+                    "Num": "3",
+                    "Area": "3995"
+                }
             },
-            "Rose Gold": {
-                "Num": "4",
-                "Area": "64"
-            },
-            "RedTape": {
-                "Num": "3",
-                "Area": "3329"
+            "ERA": {
+                "Color": "#c7ceea",
+                "Green": {
+                    "Num": "4",
+                    "Area": "62"
+                },
+                "Gold": {
+                    "Num": "4",
+                    "Area": "64"
+                },
+                "Rose Gold": {
+                    "Num": "4",
+                    "Area": "64"
+                },
+                "Red Tape": {
+                    "Num": "3",
+                    "Area": "3329"
+                }
             }
         }
     }

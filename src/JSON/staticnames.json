@@ -1,56 +1,93 @@
 {
+  "Names": {
     "Defect Code": {
-        "LOUT": "U1",
-        "WOUT": "U2",
-        "DEFORMED": "U3",
-        "BLUNTCUT": "U4",
-        "ROUGHCUT": "U5",
-        "SLANTCUT": "U6",
-        "LSHIFT": "U7",
-        "WSHIFT": "U8",
-        "STEPSHIFT": "U9",
-        "VPDENT": "UA",
-        "SMEARING": "UB",
-        "PARTIALPRINT": "UC",
-        "SHEETNG": "UD",
-        "RIDGENDENT": "UE",
-        "BROKENBLADE": "UF",
-        "PATTERNDENT": "UK",
-        "LINE": "UL",
-        "DRAGGING": "UR",
-        "ELECTRODEHORN": "US",
-        "CUTDEBRIS": "UT",
-        "OTHERS": "O1",
-        "DROPCHIP": "I1",
-        "SAMPLE": "L1"
+      "LOUT": "U1",
+      "WOUT": "U2",
+      "DEFORMED": "U3",
+      "BLUNTCUT": "U4",
+      "ROUGHCUT": "U5",
+      "SLANTCUT": "U6",
+      "LSHIFT": "U7",
+      "WSHIFT": "U8",
+      "STEPSHIFT": "U9",
+      "VPDENT": "UA",
+      "SMEARING": "UB",
+      "PARTIALPRINT": "UC",
+      "SHEETNG": "UD",
+      "RIDGENDENT": "UE",
+      "BROKENBLADE": "UF",
+      "PATTERNDENT": "UK",
+      "LINE": "UL",
+      "DRAGGING": "UR",
+      "ELECTRODEHORN": "US",
+      "CUTDEBRIS": "UT",
+      "OTHERS": "O1",
+      "DROPCHIP": "I1",
+      "SAMPLE": "L1",
+      "BLADE DATA": "BD"
     },
     "Defect Tape": [
-        "LOUT",
-        "WOUT",
-        "LSHIFT",
-        "WSHIFT",
-        "STEPSHIFT",
-        "OTHERS",
-        "BLUNTCUT",
-        "SLANTCUT",
-        "ROUGHCUT",
-        "DEFORMED"
+      "LOUT",
+      "WOUT",
+      "LSHIFT",
+      "WSHIFT",
+      "STEPSHIFT",
+      "OTHERS",
+      "BLUNTCUT",
+      "SLANTCUT",
+      "ROUGHCUT",
+      "DEFORMED"
     ],
     "Defect Sticker": {
-        "02": {
-            "Silver": "SMEARING",
-            "Rose Gold": "RIDGENDENT",
-            "Gold": "PATTERNDENT"
-        },
-        "03": {
-            "Green": "SMEARING",
-            "Rose Gold": "RIDGENDENT",
-            "Gold": "PATTERNDENT"
-        },
-        "15": {
-            "Green": "SMEARING",
-            "Rose Gold": "RIDGENDENT",
-            "Gold": "PATTERNDENT"
-        }
+      "02": {
+        "Silver": "SMEARING",
+        "Gold": "RIDGENDENT",
+        "Rose Gold": "PATTERNDENT"
+      },
+      "03": {
+        "Green": "SMEARING",
+        "Gold": "RIDGENDENT",
+        "Rose Gold": "PATTERNDENT"
+      },
+      "15": {
+        "Green": "SMEARING",
+        "Gold": "RIDGENDENT",
+        "Rose Gold": "PATTERNDENT"
+      }
+    },
+    "Defect Numpad": ["DROPCHIP", "SAMPLE"],
+    "WOS ERR": {
+      "Lot Number": {
+        "title": "Lot Number Not Found",
+        "message": "Please Input the Lot No"
+      },
+      "Payroll Number": {
+        "title": "Payroll Not Found",
+        "message": "Please Input the Payroll No"
+      },
+      "M/C Number": {
+        "title": "Machine Number Not Found",
+        "message": "Please Input the Machine No"
+      },
+      "Input Quantity": {
+        "title": "Input Quantity Not Found",
+        "message": "Please Input the Input Quantity"
+      }
+    },
+    "Blade Data": {
+      "Blade Name": ["Fresh", "Regrind"],
+      "Blade Type": ["R1", "R2", "NA"],
+      "Blade Batch No": " ",
+      "Blade Life Span": " "
+    },
+    "Font": {
+      "S": ["Calibri", 8],
+      "M": ["Calibri", 10],
+      "L": ["Calibri", 15],
+      "XL": ["Calibri", 18]
+    },
+    "Highlight": {
+      "Tape": [0, 255, 255]
     }
+  }
 }

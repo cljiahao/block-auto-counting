@@ -7,9 +7,6 @@ opencv-python
 Pillow
 
 # Data Science
-openpyxl
 pandas
 
-# Misc
-selenium
 

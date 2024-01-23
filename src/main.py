@@ -1,7 +1,6 @@
 from tkinter import *
-from Pages.MainPage import MainWindow
+from pages.Main.Main import Main
 
 if __name__ == "__main__":
-    root = Tk()
-    MainWindow(root)
+    root = Main()
     root.mainloop()
