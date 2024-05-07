@@ -40,12 +40,12 @@ class Login(Toplevel):
                     self.quit()
                     return
                 else:
-                    self.bad_pass.config(text="Password does not exist")
-                    self.bad_pass.grid(row=2, column=2, columnspan=2)
+                    self.bad_login.config(text="Password does not match")
+                    self.bad_login.grid(row=2, column=2, columnspan=2)
                     log_entry["Password"].delete(0, END)
                     return
-        self.bad_pass.config(text="Username does not exist")
-        self.bad_pass.grid(row=2, column=2, columnspan=2)
+        self.bad_login.config(text="Username does not match")
+        self.bad_login.grid(row=2, column=2, columnspan=2)
         for i, cred in enumerate(log_entry):
             if i == 0:
                 log_entry[cred].focus()
@@ -63,7 +63,7 @@ class Login(Toplevel):
         self.columnconfigure(4, weight=1)
 
     def widgets(self):
-        self.bad_pass = Label(self, bg="#fa6464")
+        self.bad_login = Label(self, bg="#fa6464")
         credentials = list(self.set_set["Credentials"].values())[0]
         string_var = {}
         entry_log = {}
