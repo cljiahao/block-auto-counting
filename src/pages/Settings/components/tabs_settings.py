@@ -65,6 +65,7 @@ def tabs_settings(frame_tab, set_names, set_set, superuser):
                             state,
                             [0, j + 1],
                             [i + 1, j + 1, 1],
+                            True,
                         )
             else:
                 tab_dict[key].columnconfigure(0, weight=1)
@@ -87,29 +88,51 @@ def tabs_settings(frame_tab, set_names, set_set, superuser):
     return tab_boxes
 
 
-def label_entry(root, tab_boxes, name, font, label, value, state, l_row_col, e_row_col):
+def label_entry(
+    root,
+    tab_boxes,
+    name,
+    font,
+    label,
+    value,
+    state,
+    l_row_col,
+    e_row_col,
+    hasCheck=False,
+):
     # Target Label
     ttk.Label(root, text=label, font=font).grid(
         row=l_row_col[0], column=l_row_col[1], padx=5, pady=5
     )
     if isinstance(value, bool):
-        tab_boxes[name] = BooleanVar(value=value)
-        ttk.Radiobutton(
-            root,
-            text="True",
-            value=1,
-            variable=tab_boxes[name],
-            style="Radio.TRadiobutton",
-            state=state,
-        ).grid(row=l_row_col[0], column=e_row_col[1], padx=10, pady=5)
-        ttk.Radiobutton(
-            root,
-            text="False",
-            value=0,
-            variable=tab_boxes[name],
-            style="Radio.TRadiobutton",
-            state=state,
-        ).grid(row=l_row_col[0], column=e_row_col[1] + 1, padx=10, pady=5)
+        if hasCheck:
+            tab_boxes[name] = BooleanVar(value=value)
+            ttk.Checkbutton(
+                root,
+                text="Super",
+                style="TCheckbutton",
+                variable=tab_boxes[name],
+                onvalue=True,
+                offvalue=False,
+            ).grid(row=e_row_col[0], column=e_row_col[1], padx=10, pady=5)
+        else:
+            tab_boxes[name] = BooleanVar(value=value)
+            ttk.Radiobutton(
+                root,
+                text="True",
+                value=1,
+                variable=tab_boxes[name],
+                style="Radio.TRadiobutton",
+                state=state,
+            ).grid(row=l_row_col[0], column=e_row_col[1], padx=10, pady=5)
+            ttk.Radiobutton(
+                root,
+                text="False",
+                value=0,
+                variable=tab_boxes[name],
+                style="Radio.TRadiobutton",
+                state=state,
+            ).grid(row=l_row_col[0], column=e_row_col[1] + 1, padx=10, pady=5)
     else:
         # Entry Box for Target
         tab_boxes[name] = ttk.Entry(root, font=font, state=state)
