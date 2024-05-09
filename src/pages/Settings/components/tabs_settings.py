@@ -1,11 +1,12 @@
+from tkinter import ttk
 from tkinter import BooleanVar, OptionMenu, StringVar
 from tkinter import ACTIVE, DISABLED, NS, EW
-from tkinter import ttk
 
 from pages.Settings.components.scroll_cont import scroll_cont
 
 
 def tabs_settings(frame_tab, set_names, set_set, superuser):
+    """Return Tabs Container with Settings"""
     # Create Edit container with tabs
     state = ACTIVE if superuser else DISABLED
     tab_dict = {}
@@ -22,6 +23,7 @@ def tabs_settings(frame_tab, set_names, set_set, superuser):
                 tab_dict[key].columnconfigure(0, weight=1)
                 # For "Accuracy" tab which is special with multi nested dicts
                 if key == "Accuracy":
+                    # Scrollbar container
                     frame_canvas_tab = scroll_cont(tab_dict[key])
 
                     acc_val = list(set_set["Accuracy"].keys())[0]
@@ -100,6 +102,7 @@ def label_input(
     e_row_col,
     hasCheck=False,
 ):
+    """Return Label-Input (Check,Radio,Entry) Widgets"""
     # Target Label
     ttk.Label(root, text=label, font=font).grid(
         row=l_row_col[0], column=l_row_col[1], padx=5, pady=5

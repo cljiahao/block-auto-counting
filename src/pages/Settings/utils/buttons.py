@@ -1,5 +1,6 @@
 from tkinter import messagebox
 from tkinter import END
+
 from components.NewColor.NewColor import NewColor
 from components.StaticNames.StaticNames import StaticNames
 
@@ -15,6 +16,7 @@ def button_diff(
     frame_drop_but,
     frame_colors,
 ):
+    """Main Function for Slider Buttons"""
     if name == "Fetch":
         fetch(root, col, mat, frame_drop_but)
     elif name == "Add":
@@ -32,6 +34,7 @@ def button_diff(
 
 
 def fetch(root, col, mat, frame_drop_but):
+    """Fetch existing HSV ranges and update Slider-Entry"""
     arr = ["", "", "", "", "", ""]
     if col in root.set_holder and mat in root.set_holder[col]:
         for key, value in root.set_holder[col][mat].items():
@@ -52,6 +55,7 @@ def fetch(root, col, mat, frame_drop_but):
 
 
 def add(root, col, mat, frame_drop_but, frame_colors):
+    """Add new HSV ranges from Slider-Entry to holder"""
     # Color Container
     if col in root.set_holder and mat in root.set_holder[col]:
         ll_ul = {"LL": [], "UL": []}
@@ -64,11 +68,12 @@ def add(root, col, mat, frame_drop_but, frame_colors):
         for i in ll_ul.copy():
             ll_ul[i] = ",".join(ll_ul[i])
 
+        # Set value to holder
         root.set_holder[col][mat] = ll_ul
 
+        # Refresh Colour Container
         for widget in frame_colors.winfo_children():
             widget.destroy()
-
         color_container(frame_colors, root)
     else:
         messagebox.showerror(
@@ -79,6 +84,7 @@ def add(root, col, mat, frame_drop_but, frame_colors):
 
 
 def reset(root):
+    """Reset HSV ranges from Slider-Entry to default"""
     for i, txt in enumerate(root.entry_hsv.keys()):
         # Algo for 0 or 255 on Scale / Slider
         limit = 0 if i % 2 == 0 else 255
@@ -87,6 +93,7 @@ def reset(root):
 
 
 def new(root, frame_colors):
+    """To open NewColor Window to add new or update HSV ranges from Slider-Entry, defect modes and accuracy"""
     ll_ul = {"LL": [], "UL": []}
     for txt, widget in root.entry_hsv.items():
         if "Low" in txt:
@@ -97,14 +104,15 @@ def new(root, frame_colors):
     for i in ll_ul.copy():
         ll_ul[i] = ",".join(ll_ul[i])
 
+    # Refresh Colour Container
     if NewColor(root, ll_ul).res:
         for widget in frame_colors.winfo_children():
             widget.destroy()
-
         color_container(frame_colors, root)
 
 
 def save(root):
+    """Save and write to json for Settings, Colors and Accuracy"""
     # Write to Color Json File
     data_col = {"Colors": root.set_holder}
     write_json("json/colors.json", data_col)
@@ -122,6 +130,7 @@ def save(root):
     # Write to Static Names Json File
     data_names = {"Names": root.set_names}
     write_json("json/staticnames.json", data_names)
+
     root.res = True
     root.light.light_switch()
     root.cap.release()
@@ -131,10 +140,12 @@ def save(root):
 
 
 def staticnames(root):
+    """To open StaticNames window to show defect name per colour"""
     StaticNames(root)
 
 
 def save_set(dict_set, key, value):
+    """Main Function to save settings"""
     if isinstance(dict_set[key[0]], dict):
         save_set(dict_set[key[0]], key[1:], value)
     else:
@@ -142,6 +153,7 @@ def save_set(dict_set, key, value):
 
 
 def no_change(root):
+    """Main Function to cancel and not save"""
     root.res = False
     root.light.light_switch()
     root.cap.release()

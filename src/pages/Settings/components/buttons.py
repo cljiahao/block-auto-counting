@@ -5,6 +5,7 @@ from pages.Settings.utils.buttons import button_diff, no_change, save, staticnam
 
 
 def slider_buttons(frame_drop_but, root, frame_colors):
+    """Return Dropdown for existing color and material, and Buttons for fetch, add, reset and new"""
     # Drop down box to select colour
     sel_col = StringVar(value="Select Colour:")
     drop_col = OptionMenu(
@@ -21,7 +22,7 @@ def slider_buttons(frame_drop_but, root, frame_colors):
     drop_mat.config(state=DISABLED)
     drop_mat.grid(row=0, column=2, columnspan=2, padx=15, ipadx=10, ipady=5, sticky=EW)
 
-    # Button for Fetching, Adding and Reseting color data
+    # Button for Fetching, Adding, and Reseting color data and New Colour
     button_names = ["Fetch", "Add", "Reset", "New"]
     for i, name in enumerate(button_names):
         frame_drop_but.columnconfigure(i, weight=1)
@@ -40,16 +41,20 @@ def slider_buttons(frame_drop_but, root, frame_colors):
 
 
 def save_buttons(root, frame_buttons):
+    """Return Buttons for staticnames, save and cancel"""
+    # Static Names Button
     Button(
         frame_buttons,
         text="Static Names",
         command=lambda: staticnames(root),
     ).grid(row=0, column=0, columnspan=2, padx=10, ipadx=10, ipady=5, sticky=EW)
 
+    # Save Changes Button
     Button(frame_buttons, text="Save Changes", command=lambda: save(root)).grid(
         row=1, column=0, padx=10, ipadx=10, ipady=5, sticky=EW
     )
 
+    # No Changes Button
     Button(frame_buttons, text="No Changes", command=lambda: no_change(root)).grid(
         row=1, column=1, padx=10, ipadx=10, ipady=5, sticky=EW
     )

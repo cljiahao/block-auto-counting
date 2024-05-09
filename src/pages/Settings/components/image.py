@@ -3,6 +3,8 @@ from tkinter import SUNKEN, NS, EW
 
 
 def show_img_mask(frame_cam):
+    """Return widget components to display image"""
+
     # Display image on this container
     capture = Label(
         frame_cam,
