@@ -118,12 +118,12 @@ def show_accuracy(settings, screen_size, light, mat):
             light.light_switch()
 
 
-def show_settings(self, settings, screen_size, light, refresh):
+def show_settings(self, settings, screen_size, light, mode, refresh):
     """Show Settings Page"""
     try:
         login, superuser = Login(settings, screen_size).res
         if login:
-            res = Settings(light, superuser).res
+            res = Settings(mode, light, superuser).res
             if res:
                 self.light.close()
                 self.destroy()
