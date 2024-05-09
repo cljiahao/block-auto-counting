@@ -43,7 +43,6 @@ def save_buttons(root, frame_buttons):
     Button(
         frame_buttons,
         text="Static Names",
-        state=DISABLED,
         command=lambda: staticnames(root),
     ).grid(row=0, column=0, columnspan=2, padx=10, ipadx=10, ipady=5, sticky=EW)
 
