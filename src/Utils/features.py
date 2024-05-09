@@ -37,6 +37,9 @@ def get_defects(settings, image, cali_pixel, chip_type, mat):
 def get_col_dict(settings, mat):
     col_dict = {}
     for colour, value in settings["Colors"].items():
+        if colour == "Pin":
+            continue
+        if mat in value:
             Col_LL = np.array(
                 [int(x) for x in value[mat]["LL"].split(",")],
                 dtype=np.uint8,
