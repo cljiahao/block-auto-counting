@@ -10,6 +10,7 @@ from tkinter import (
 )
 from tkinter import BOTH, NS, EW
 
+from components.common.checkbox import checkbox
 from components.common.label_entry import label_entry
 from components.common.optionmenu import dropdown
 
@@ -37,22 +38,19 @@ class NewColor(Toplevel):
         elif key == "num" or key == "area":
             return bool(re.search(r"\d", input) or input == "")
 
-    def edit_col(self, text, ll_ul, mat, chip, mode, col_entry, acc_entry):
-        if (
-            mat not in self.set_set["Accuracy"]
-            or chip not in self.set_names["Defect Sticker"]
-            or mode not in self.set_names["Defect Code"]
-        ):
+    def edit_col(self, text, ll_ul, mat, chips, mode, col_entry, acc_entry):
+        if mat not in self.set_set["Accuracy"]:
             messagebox.showerror(
-                title="Option not selected",
-                message=f"Please Select an Option",
+                title="Material not selected",
+                message=f"Please Select an Option for Material",
                 parent=self,
             )
             return
+
         # Add new Colours or Update
         col = col_entry.get()
         if (text == "new" and (col == "" or col in self.set_holder)) or (
-            text == "update" and col not in self.set_holder
+            col not in self.set_holder and (text == "update" or text == "remove")
         ):
             col_entry.config(bg="#fa6464")
             return
@@ -64,31 +62,49 @@ class NewColor(Toplevel):
             if text == "new" and (v == "" or col in self.set_set["Accuracy"][mat]):
                 value.config(bg="#fa6464")
                 return
-            acc_dict[key] = v
+            if (
+                v != ""
+                or col not in self.set_set["Accuracy"][mat]
+                or key not in self.set_set["Accuracy"][mat][col]
+            ):
+                acc_dict[key] = v
+            elif text != "remove":
+                acc_dict[key] = self.set_set["Accuracy"][mat][col][key]
 
         # Add new defect mode
-        def_modes = self.set_names["Defect Sticker"][chip]
-        if (text == "new" and mode in def_modes.values()) or (
-            text == "update"
-            and mode in def_modes.values()
-            and list(def_modes.keys())[list(def_modes.values()).index(mode)] != col
-        ):
-            messagebox.showerror(
-                title="Mode exists",
-                message=f"Modes exists with other colours, {list(def_modes.keys())[list(def_modes.values()).index(mode)]}: {mode}",
-                parent=self,
-            )
-            return
+        for chip in chips:
+            def_modes = self.set_names["Defect Sticker"][chip]
+            if (text == "new" and mode in def_modes.values()) or (
+                text == "update"
+                and mode in def_modes.values()
+                and list(def_modes.keys())[list(def_modes.values()).index(mode)] != col
+            ):
+                messagebox.showerror(
+                    title="Mode exists",
+                    message=f"Modes exists with other colours, {list(def_modes.keys())[list(def_modes.values()).index(mode)]}: {mode}",
+                    parent=self,
+                )
+                return
 
         # Update after all check is done
-        if text == "new":
-            self.set_set["Accuracy"][mat].update({col: acc_dict})
+        if col in self.set_holder:
+            if text == "remove" and mat in self.set_holder[col]:
+                del self.set_holder[col][mat]
+            else:
+                self.set_holder[col].update({mat: ll_ul})
+        else:
             self.set_holder[col] = {mat: ll_ul}
-            def_modes.update({col: mode})
-        elif text == "update":
-            self.set_set["Accuracy"][mat][col] = acc_dict
-            self.set_holder[col][mat] = ll_ul
-            def_modes[col] = mode
+
+        self.set_set["Accuracy"][mat].update({col: acc_dict})
+
+        for chip in self.set_names["Defect Sticker"]:
+            if text == "remove" and col in self.set_names["Defect Sticker"][chip]:
+                del self.set_names["Defect Sticker"][chip][col]
+            if mode in self.set_names["Defect Code"]:
+                if chip in chips:
+                    self.set_names["Defect Sticker"][chip].update({col: mode})
+                elif col in self.set_names["Defect Sticker"][chip]:
+                    del self.set_names["Defect Sticker"][chip][col]
 
         self.res = True
         self.destroy()
@@ -96,7 +112,7 @@ class NewColor(Toplevel):
 
     def win_config(self):
         self.title("Add New Colour")
-        self.geometry("+600+50")
+        self.geometry("+400+30")
         self.frame = Frame(self)
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(9, weight=1)
@@ -174,19 +190,17 @@ class NewColor(Toplevel):
             row=3, column=0, columnspan=2, padx=5, pady=5, sticky=NS + EW
         )
 
-        # Chip type tied to defect mode
-        sel_chip = dropdown(
+        # Defect Mode tied to chip type
+        sel_chip = checkbox(
             frame_chip_mode,
             "Chip Type",
-            "Select Chip Type",
             self.set_names["Defect Sticker"],
-            self.set_names["Font"]["M"],
             self.set_names["Font"]["M"],
             0,
             0,
         )
 
-        # Defect Mode tied to chip type
+        # Chip type tied to defect mode
         sel_mode = dropdown(
             frame_chip_mode,
             "Defect Mode",
@@ -199,10 +213,10 @@ class NewColor(Toplevel):
         )
 
         # FRAME: Frame for buttons
-
         frame_buttons = Frame(self.frame)
         frame_buttons.columnconfigure(0, weight=1)
         frame_buttons.columnconfigure(1, weight=1)
+        frame_buttons.columnconfigure(2, weight=1)
         frame_buttons.grid(
             row=4, column=0, columnspan=2, padx=5, pady=5, sticky=NS + EW
         )
@@ -216,7 +230,7 @@ class NewColor(Toplevel):
                 "update",
                 ll_ul,
                 sel_mat.get(),
-                sel_chip.get(),
+                [i for i in sel_chip if sel_chip[i].get() == 1],
                 sel_mode.get(),
                 col_entry,
                 acc_entry,
@@ -232,9 +246,26 @@ class NewColor(Toplevel):
                 "new",
                 ll_ul,
                 sel_mat.get(),
-                sel_chip.get(),
+                [i for i in sel_chip if sel_chip[i].get() == 1],
                 sel_mode.get(),
                 col_entry,
                 acc_entry,
             ),
         ).grid(row=0, column=1, padx=10, pady=10, sticky=NS + EW)
+
+        # Remove Button
+        Button(
+            frame_buttons,
+            text="Remove",
+            font=self.set_names["Font"]["M"],
+            bg="#fa6565",
+            command=lambda: self.edit_col(
+                "remove",
+                ll_ul,
+                sel_mat.get(),
+                [i for i in sel_chip if sel_chip[i].get() == 1],
+                sel_mode.get(),
+                col_entry,
+                acc_entry,
+            ),
+        ).grid(row=0, column=2, padx=10, pady=10, sticky=NS + EW)
