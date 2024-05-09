@@ -55,7 +55,7 @@ def tabs_settings(frame_tab, set_names, set_set, superuser):
                     )
                     for j, k in enumerate(value[ke]):
                         tab_dict[key].columnconfigure(j + 1, weight=2)
-                        label_entry(
+                        label_input(
                             tab_dict[key],
                             tab_boxes,
                             f"{key}_{ke}_{k}",
@@ -71,7 +71,7 @@ def tabs_settings(frame_tab, set_names, set_set, superuser):
                 tab_dict[key].columnconfigure(0, weight=1)
                 tab_dict[key].columnconfigure(1, weight=3)
                 tab_dict[key].columnconfigure(2, weight=3)
-                label_entry(
+                label_input(
                     tab_dict[key],
                     tab_boxes,
                     f"{key}_{ke}",
@@ -88,7 +88,7 @@ def tabs_settings(frame_tab, set_names, set_set, superuser):
     return tab_boxes
 
 
-def label_entry(
+def label_input(
     root,
     tab_boxes,
     name,
@@ -153,6 +153,8 @@ def refresh(root, tab_boxes, name, font, value, state):
         if not str(widget).split("!")[-1] == "optionmenu":
             widget.destroy()
     for i, key in enumerate(value):
+        if len(value[key]) < 1:
+            continue
         # Target Row Label
         ttk.Label(root, text=key, font=font).grid(
             row=i + 1, column=0, padx=5, pady=5, sticky=EW
@@ -160,7 +162,7 @@ def refresh(root, tab_boxes, name, font, value, state):
         if isinstance(value[key], dict):
             for j, k in enumerate(value[key]):
                 root.columnconfigure(j + 1, weight=1)
-                label_entry(
+                label_input(
                     root,
                     tab_boxes,
                     f"{name}_{key}_{k}",
@@ -172,7 +174,7 @@ def refresh(root, tab_boxes, name, font, value, state):
                     [i + 1, j + 1, 1],
                 )
         else:
-            label_entry(
+            label_input(
                 root,
                 tab_boxes,
                 f"{name}_{key}",
