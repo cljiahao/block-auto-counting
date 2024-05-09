@@ -73,8 +73,9 @@ def save_img(img, mat, save_path):
     # Save to trouble with a random small chance for troubleshooting
     rand_digit = random.randrange(0, 1000) / 1000
     if rand_digit < 0.05:
-        folder_path = os.path.join(dire.path_trouble, now.strftime("%b%y"))
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
-        file_path = os.path.join(folder_path, f"{mat}_{now.strftime('%d-%m-%y')}.png")
+        if not os.path.exists(dire.path_trouble):
+            os.makedirs(dire.path_trouble)
+        file_path = os.path.join(
+            dire.path_trouble, f"{mat}_{now.strftime('%d-%m-%y')}.png"
+        )
         cv2.imwrite(file_path, img)
