@@ -12,7 +12,7 @@ def cvt_image(img):
 
 
 def get_defects(settings, image, cali_pixel, chip_type, mat):
-    col_dict = get_col_dict(settings, chip_type, mat)
+    col_dict = get_col_dict(settings, mat)
     block = find_block(image)
     m_stickers = find_stickers(block, col_dict)
     # Dilate by factor for chip processing
@@ -34,10 +34,12 @@ def get_defects(settings, image, cali_pixel, chip_type, mat):
     return defects, block
 
 
-def get_col_dict(settings, chip_type, mat):
+def get_col_dict(settings, mat):
     col_dict = {}
     for colour, value in settings["Colors"].items():
-        if "Chip Type" in value.keys() and chip_type in value["Chip Type"]:
+        if colour == "Pin":
+            continue
+        if mat in value:
             Col_LL = np.array(
                 [int(x) for x in value[mat]["LL"].split(",")],
                 dtype=np.uint8,
@@ -115,10 +117,6 @@ def find_stickers(img, col_dict):
             morph = cv2.morphologyEx(erode, cv2.MORPH_OPEN, None)
             dilate = cv2.dilate(morph, None)
             mix = cv2.bitwise_or(mix, dilate)
-
-    mix = cv2.morphologyEx(
-        mix, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8), iterations=2
-    )
 
     return mix
 

@@ -44,24 +44,31 @@ class Accuracy(Toplevel):
         )
 
         accuracy = self.set_set["Accuracy"][mat]
-        i = 0
+
+        for i, state_label in enumerate(["Num", "Area"]):
+            Label(frame_acc, font=self.set_names["Font"]["M"], text=state_label).grid(
+                row=0, column=3 * (i + 1) - 3, columnspan=3, pady=5, sticky=EW
+            )
+
+        j = 1
         for col in accuracy.keys():
-            if col == "Color":
+            if col == "Color" or len(accuracy[col]) < 1:
                 continue
             self.acc_calc[col] = {}
             self.acc_var[col] = {}
             self.canva[col] = {}
-            for state in accuracy[col]:
-                # Accuracy Name
-                Label(
-                    frame_acc, font=self.set_names["Font"]["M"], text=f"{col}_{state}"
-                ).grid(row=i, column=0, padx=10, pady=5, sticky=W)
-
+            # Accuracy Name
+            Label(frame_acc, font=self.set_names["Font"]["M"], text=col).grid(
+                row=j, column=0, padx=10, pady=5, sticky=W
+            )
+            for k, state in enumerate(accuracy[col]):
                 # Accuracy Calculated Quantity
                 self.acc_var[col][state] = Label(
                     frame_acc, text=calc_accuracy[col][state], width=10, relief=RIDGE
                 )
-                self.acc_var[col][state].grid(row=i, column=1, pady=5, sticky=W)
+                self.acc_var[col][state].grid(
+                    row=j, column=3 * (k + 1) - 2, pady=5, sticky=W
+                )
 
                 # Accuracy Actual Quantity
                 self.acc_calc[col][state] = StringVar(value=accuracy[col][state])
@@ -72,7 +79,7 @@ class Accuracy(Toplevel):
                     width=12,
                     justify=CENTER,
                     state=DISABLED,
-                ).grid(row=i, column=2, padx=10, pady=5, sticky=W)
+                ).grid(row=j, column=3 * (k + 1) - 1, padx=10, pady=5, sticky=W)
 
                 # Red Green Light
                 self.canva[col][state] = Canvas(
@@ -80,7 +87,7 @@ class Accuracy(Toplevel):
                     width=int(1 / 40 * screen_size["w_screen"]),
                     height=int(1 / 24 * screen_size["h_screen"]),
                 )
-                self.canva[col][state].grid(row=i, column=3, pady=5, sticky=W)
+                self.canva[col][state].grid(row=j, column=3 * (k + 1), pady=5, sticky=W)
                 self.canva[col][state].create_oval(
                     int(1 / 320 * screen_size["w_screen"]),
                     int(1 / 192 * screen_size["h_screen"]),
@@ -91,13 +98,15 @@ class Accuracy(Toplevel):
 
                 pass_fail = (
                     "#93D976"
-                    if abs(int(accuracy[col][state]) - calc_accuracy[col][state])
-                    < int(accuracy[col][state]) * float(self.set_set["Tolerance"]["Percentage"])
+                    if abs(int(accuracy[col][state]) - int(calc_accuracy[col][state]))
+                    < int(accuracy[col][state])
+                    * float(self.set_set["Tolerance"]["Percentage"])
                     else "#fa6464"
                 )
                 self.canva[col][state].itemconfig("circle", fill=pass_fail)
 
-                i += 1
+            j += 1
+
         Button(
             frame_button,
             text="Done",
