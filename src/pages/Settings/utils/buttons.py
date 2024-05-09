@@ -108,13 +108,20 @@ def save(root):
     # Write to Color Json File
     data_col = {"Colors": root.set_holder}
     write_json("json/colors.json", data_col)
+
     # Write to Settings Json File
     for k, v in root.tab_boxes.items():
+        # TODO: Find a way to save the information in Accuracy tab_box
+        if "Accuracy" in k:
+            continue
         value = v.get()
         save_set(root.set_set, k.split("_"), value)
     data_set = {"Settings": root.set_set}
     write_json("json/settings.json", data_set)
+
     # Write to Static Names Json File
+    data_names = {"Names": root.set_names}
+    write_json("json/staticnames.json", data_names)
     root.res = True
     root.light.light_switch()
     root.cap.release()
@@ -124,7 +131,7 @@ def save(root):
 
 
 def staticnames(root):
-    StaticNames()
+    StaticNames(root)
 
 
 def save_set(dict_set, key, value):
