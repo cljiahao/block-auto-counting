@@ -38,18 +38,15 @@ class NewColor(Toplevel):
         elif key == "num" or key == "area":
             return bool(re.search(r"\d", input) or input == "")
 
-    def edit_col(self, text, ll_ul, mat, chip, mode, col_entry, acc_entry):
-        if (
-            mat not in self.set_set["Accuracy"]
-            or chip not in self.set_names["Defect Sticker"]
-            or mode not in self.set_names["Defect Code"]
-        ):
+    def edit_col(self, text, ll_ul, mat, chips, mode, col_entry, acc_entry):
+        if mat not in self.set_set["Accuracy"]:
             messagebox.showerror(
-                title="Option not selected",
-                message=f"Please Select an Option",
+                title="Material not selected",
+                message=f"Please Select an Option for Material",
                 parent=self,
             )
             return
+
         # Add new Colours or Update
         col = col_entry.get()
         if (text == "new" and (col == "" or col in self.set_holder)) or (
@@ -102,7 +99,7 @@ class NewColor(Toplevel):
 
     def win_config(self):
         self.title("Add New Colour")
-        self.geometry("+600+50")
+        self.geometry("+400+30")
         self.frame = Frame(self)
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(9, weight=1)
