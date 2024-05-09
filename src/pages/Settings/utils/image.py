@@ -10,9 +10,9 @@ def filter_img(root, frame, entry_hsv):
     hsv_high = []
     for key, value in entry_hsv.items():
         if "Low" in key:
-            hsv_low.append(value.get())
+            hsv_low.append(value.get() if value.get() else 0)
         else:
-            hsv_high.append(value.get())
+            hsv_high.append(value.get() if value.get() else 0)
 
     hsv_low = np.array(hsv_low, np.uint8)
     hsv_high = np.array(hsv_high, np.uint8)
