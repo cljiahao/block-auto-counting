@@ -3,7 +3,7 @@ from tkinter import SUNKEN, NS, EW
 
 
 def show_image(frame, set_names):
-    # Display image on this container
+    """Return widget components to display image"""
     capture = Label(frame, relief=SUNKEN)
     capture.grid(
         row=0,

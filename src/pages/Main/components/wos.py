@@ -3,6 +3,7 @@ from tkinter import LEFT, CENTER, E, W
 
 
 def wos_entry(frame_wos, set_names, wos_var, reg_entry):
+    """Return widget components for Label-Entry for Lot No, Payroll No, Machine No and Lot Quantity"""
     for d, wos_name in enumerate(set_names["WOS ERR"].keys()):
         # Algo for rows and columns
         e = int(d / 2)
@@ -21,5 +22,4 @@ def wos_entry(frame_wos, set_names, wos_var, reg_entry):
             validate="key",
             validatecommand=reg_entry,
         )
-
         wos_var[wos_name].grid(row=e, column=f + 1, columnspan=2, pady=3, sticky=E)
