@@ -20,7 +20,7 @@
             }
         },
         "Troubleshoot": {
-            "Trouble": false,
+            "Trouble": true,
             "File Name": ""
         },
         "Config": {
@@ -52,59 +52,131 @@
         "Accuracy": {
             "EQA": {
                 "Color": "#c6e2e9",
-                "Silver": {
-                    "Num": "4",
-                    "Area": "64"
-                },
                 "Gold": {
-                    "Num": "4",
-                    "Area": "63"
+                    "Num": "2",
+                    "Area": "31"
                 },
                 "Rose Gold": {
-                    "Num": "4",
-                    "Area": "66"
+                    "Num": "2",
+                    "Area": "32"
                 },
-                "Black Tape": {
-                    "Num": "3",
-                    "Area": "3844"
+                "Silver": {
+                    "Num": "2",
+                    "Area": "31"
+                },
+                "Green": {
+                    "Num": "2",
+                    "Area": "31"
+                },
+                "Blue": {
+                    "Num": "2",
+                    "Area": "32"
+                },
+                "Cyan": {
+                    "Num": "2",
+                    "Area": "30"
+                },
+                "Pink": {
+                    "Num": "2",
+                    "Area": "31"
+                },
+                "Yellow": {
+                    "Num": "2",
+                    "Area": "31"
+                },
+                "BlackTape": {
+                    "Num": "2",
+                    "Area": "458"
+                },
+                "RedTape": {
+                    "Num": "2",
+                    "Area": "248"
                 }
             },
             "DMA": {
                 "Color": "#fffdaf",
-                "Green": {
-                    "Num": "4",
-                    "Area": "63"
-                },
                 "Gold": {
-                    "Num": "4",
-                    "Area": "63"
+                    "Num": "2",
+                    "Area": "32"
                 },
                 "Rose Gold": {
-                    "Num": "4",
-                    "Area": "65"
+                    "Num": "2",
+                    "Area": "31"
                 },
-                "Red Tape": {
-                    "Num": "3",
-                    "Area": "3995"
+                "Silver": {
+                    "Num": "2",
+                    "Area": "31"
+                },
+                "Green": {
+                    "Num": "2",
+                    "Area": "32"
+                },
+                "Blue": {
+                    "Num": "2",
+                    "Area": "31"
+                },
+                "Cyan": {
+                    "Num": "2",
+                    "Area": "32"
+                },
+                "Pink": {
+                    "Num": "2",
+                    "Area": "30"
+                },
+                "Yellow": {
+                    "Num": "2",
+                    "Area": "30"
+                },
+                "BlackTape": {
+                    "Num": "2",
+                    "Area": "717"
+                },
+                "RedTape": {
+                    "Num": "2",
+                    "Area": "255"
                 }
             },
             "ERA": {
                 "Color": "#c7ceea",
-                "Green": {
-                    "Num": "4",
-                    "Area": "62"
-                },
                 "Gold": {
-                    "Num": "4",
-                    "Area": "64"
+                    "Num": "2",
+                    "Area": "32"
                 },
                 "Rose Gold": {
-                    "Num": "4",
-                    "Area": "64"
+                    "Num": "2",
+                    "Area": "32"
                 },
-                "Red Tape": {
-                    "Num": "3",
-                    "Area": "3329"
+                "Silver": {
+                    "Num": "2",
+                    "Area": "31"
+                },
+                "Green": {
+                    "Num": "2",
+                    "Area": "30"
+                },
+                "Blue": {
+                    "Num": "2",
+                    "Area": "30"
+                },
+                "Cyan": {
+                    "Num": "2",
+                    "Area": "31"
+                },
+                "Pink": {
+                    "Num": "2",
+                    "Area": "31"
+                },
+                "Yellow": {
+                    "Num": "2",
+                    "Area": "30"
+                },
+                "BlackTape": {
+                    "Num": "2",
+                    "Area": "506"
+                },
+                "RedTape": {
+                    "Num": "2",
+                    "Area": "202"
                 }
             }
         }
