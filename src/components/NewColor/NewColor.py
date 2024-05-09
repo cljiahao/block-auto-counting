@@ -1,13 +1,6 @@
 import re
 import subprocess
-from tkinter import (
-    Toplevel,
-    Frame,
-    LabelFrame,
-    Label,
-    Button,
-    messagebox,
-)
+from tkinter import Toplevel, Frame, LabelFrame, Label, Button, messagebox
 from tkinter import BOTH, NS, EW
 
 from components.common.checkbox import checkbox
@@ -16,6 +9,17 @@ from components.common.optionmenu import dropdown
 
 
 class NewColor(Toplevel):
+    """
+    NewColor Window Component to add or update Colors
+
+    Parameters
+    ----------
+    root : root
+        Parent root
+    ll_ul : dict
+        HSV Range (LL, UL) from Slider-Entry
+    """
+
     def __init__(self, root, ll_ul):
         Toplevel.__init__(self)
         self.initialize(root)
@@ -25,6 +29,7 @@ class NewColor(Toplevel):
         self.mainloop()
 
     def initialize(self, root):
+        """Initialize variables"""
         self.res = False
         self.set_names = root.set_names
         self.set_holder = root.set_holder
@@ -32,6 +37,7 @@ class NewColor(Toplevel):
         subprocess.Popen("osk", stdout=subprocess.PIPE, shell=True)
 
     def cb_entry(self, input, name):
+        """Call backs for Entry"""
         key = name.split(".")[-1]
         if key == "color":
             return bool(re.search(r"[^\W\d_]", input) or input == "")
@@ -39,6 +45,9 @@ class NewColor(Toplevel):
             return bool(re.search(r"\d", input) or input == "")
 
     def edit_col(self, text, ll_ul, mat, chips, mode, col_entry, acc_entry):
+        """Check condition before returning updated inputs"""
+
+        # Check if material is selected
         if mat not in self.set_set["Accuracy"]:
             messagebox.showerror(
                 title="Material not selected",
@@ -55,7 +64,7 @@ class NewColor(Toplevel):
             col_entry.config(bg="#fa6464")
             return
 
-        # Add new Accuracy
+        # Add new or update Accuracy (Num, Area) values
         acc_dict = {}
         for key, value in acc_entry.items():
             v = value.get()
@@ -71,7 +80,7 @@ class NewColor(Toplevel):
             elif text != "remove":
                 acc_dict[key] = self.set_set["Accuracy"][mat][col][key]
 
-        # Add new defect mode
+        # Add new defect mode based on selected chip types
         for chip in chips:
             def_modes = self.set_names["Defect Sticker"][chip]
             if (text == "new" and mode in def_modes.values()) or (
@@ -88,22 +97,30 @@ class NewColor(Toplevel):
 
         # Update after all check is done
         if col in self.set_holder:
+            # Remove HSV range from holder
             if text == "remove" and mat in self.set_holder[col]:
                 del self.set_holder[col][mat]
             else:
+                # Update existing Color with new Mode
                 self.set_holder[col].update({mat: ll_ul})
         else:
+            # Set new Color to new Mode
             self.set_holder[col] = {mat: ll_ul}
 
+        # Set or update Color to Accuracy (Num, Area) value
         self.set_set["Accuracy"][mat].update({col: acc_dict})
 
         for chip in self.set_names["Defect Sticker"]:
+            # Remove Color-Mode from holder
             if text == "remove" and col in self.set_names["Defect Sticker"][chip]:
                 del self.set_names["Defect Sticker"][chip][col]
+            # Update only if mode exists
             if mode in self.set_names["Defect Code"]:
                 if chip in chips:
+                    # Set or update Color-Mode
                     self.set_names["Defect Sticker"][chip].update({col: mode})
                 elif col in self.set_names["Defect Sticker"][chip]:
+                    # Delete if chip type are unchecked
                     del self.set_names["Defect Sticker"][chip][col]
 
         self.res = True
@@ -111,6 +128,7 @@ class NewColor(Toplevel):
         self.quit()
 
     def win_config(self):
+        """Tkinter Window Config"""
         self.title("Add New Colour")
         self.geometry("+400+30")
         self.frame = Frame(self)
@@ -119,21 +137,25 @@ class NewColor(Toplevel):
         self.frame.pack(fill=BOTH, expand=True)
 
     def widgets(self, ll_ul):
+        """Tkinter Widgets building"""
+        # Register for entry callbacks
         reg_entry = (self.register(self.cb_entry), "%P", "%W")
 
         # LABELFRAME: Label frame for HSV
         frame_hsv = LabelFrame(self.frame)
         frame_hsv.grid(row=0, column=0, columnspan=2, padx=5, pady=5, sticky=NS + EW)
 
-        # HSV Range
+        # HSV Label
         Label(frame_hsv, text="HSV", font=self.set_names["Font"]["M"], width=10).grid(
             row=1, column=0, padx=10, pady=10, sticky=NS + EW
         )
         for i, key in enumerate(ll_ul.keys()):
             frame_hsv.columnconfigure(i + 1, weight=1)
+            # Header for HSV Ranges
             Label(frame_hsv, text=key, font=self.set_names["Font"]["M"]).grid(
                 row=0, column=i + 1, padx=10, pady=10, sticky=NS + EW
             )
+            # HSV Ranges
             Label(frame_hsv, text=ll_ul[key], font=self.set_names["Font"]["M"]).grid(
                 row=1, column=i + 1, padx=10, pady=10, sticky=NS + EW
             )
@@ -157,6 +179,7 @@ class NewColor(Toplevel):
             0,
         )
 
+        # Label-Entry to input Color Names
         col_entry = label_entry(
             frame_mat_col,
             "Color Name",
@@ -173,6 +196,7 @@ class NewColor(Toplevel):
         frame_acc.columnconfigure(2, weight=1)
         frame_acc.grid(row=2, column=0, columnspan=2, padx=5, pady=5, sticky=NS + EW)
 
+        # Label-Entry to input Accuracy (Num, Area) values
         acc_entry = label_entry(
             frame_acc,
             "Accuracy",

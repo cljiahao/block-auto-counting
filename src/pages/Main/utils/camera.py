@@ -9,6 +9,7 @@ from utils.features import get_defects
 
 
 def camera(settings):
+    """Return cam after setting resolution"""
     res = settings["Settings"]["Config"]
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, int(res["CamResWidth"]))
@@ -17,6 +18,7 @@ def camera(settings):
 
 
 def process_img(settings, light, mat, chip_type, troubleshoot, save_path):
+    """Main function to process image. Return defects results and block image with drawings."""
     img_arr = prep_cam(settings, light, mat, troubleshoot)
     image, cali_pixel = cali_hough(settings, mat, img_arr)
     save_img(image, mat, save_path)
@@ -25,6 +27,7 @@ def process_img(settings, light, mat, chip_type, troubleshoot, save_path):
 
 
 def prep_cam(settings, light, mat, troubleshoot):
+    """Return arr of images for calibration to choose best image"""
     img_arr = []
     if troubleshoot["Trouble"]:
         file_lists = os.listdir(dire.path_trouble)
@@ -62,6 +65,7 @@ def prep_cam(settings, light, mat, troubleshoot):
 
 
 def save_img(img, mat, save_path):
+    """Save image function"""
     # Save to respective save_path
     now = dt.today()
     folder_path = os.path.join(save_path, now.strftime("%b%y"))

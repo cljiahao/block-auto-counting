@@ -5,6 +5,23 @@ from utils.features import cvt_image
 
 
 class Accuracy(Toplevel):
+    """
+    Accuracy Page for showing accuracy results processing accuracy blocks
+
+    Parameters
+    ----------
+    settings : dict
+        Settings
+    screen_size : dict
+        Providing Screen Size (Width and Height) to Class
+    img : MatLike
+        Image depicted with numbers to show which is point at
+    calc_accuracy : dict
+        Tabulated Num and Area values to each Colours
+    mat : str
+        Material Type
+    """
+
     def __init__(self, settings, screen_size, img, calc_accuracy, mat):
         Toplevel.__init__(self)
         self.initialize(settings, img)
@@ -12,6 +29,7 @@ class Accuracy(Toplevel):
         self.widgets(screen_size, calc_accuracy, mat)
 
     def initialize(self, settings, img):
+        """Initialize variables"""
         self.set_names = settings["Names"]
         self.set_colors = settings["Colors"]
         self.set_set = settings["Settings"]
@@ -21,12 +39,14 @@ class Accuracy(Toplevel):
         self.canva = {}
 
     def win_config(self):
+        """Tkinter Window Config"""
         self.state("zoomed")
         self.title("Accuracy Check window")
         self.frame = Frame(self)
         self.frame.pack(fill=BOTH, expand=True)
 
     def widgets(self, screen_size, calc_accuracy, mat):
+        """Tkinter Widgets building"""
         # Display image on this container
         self.img_win = Label(self.frame, relief=SUNKEN, image=self.imgtk)
         self.img_win.grid(
@@ -45,13 +65,16 @@ class Accuracy(Toplevel):
 
         accuracy = self.set_set["Accuracy"][mat]
 
+        # Headers for each Color
         for i, state_label in enumerate(["Num", "Area"]):
             Label(frame_acc, font=self.set_names["Font"]["M"], text=state_label).grid(
                 row=0, column=3 * (i + 1) - 3, columnspan=3, pady=5, sticky=EW
             )
 
+        # Actual Accuracy, Processed results and pass/fail
         j = 1
         for col in accuracy.keys():
+            # Skip color for optionmenu and if color value is empty
             if col == "Color" or len(accuracy[col]) < 1:
                 continue
             self.acc_calc[col] = {}
@@ -96,6 +119,7 @@ class Accuracy(Toplevel):
                 )
                 self.canva[col][state].addtag_withtag("circle", 1)
 
+                # Return Green if pass, Red if fail
                 pass_fail = (
                     "#93D976"
                     if abs(int(accuracy[col][state]) - int(calc_accuracy[col][state]))
@@ -107,6 +131,7 @@ class Accuracy(Toplevel):
 
             j += 1
 
+        # Done Button to close
         Button(
             frame_button,
             text="Done",

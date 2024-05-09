@@ -6,6 +6,25 @@ from utils.features import cvt_image
 
 
 class Selection(Toplevel):
+    """
+    Selection Window Component to select non-established defects to stickers
+
+    Parameters
+    ----------
+    settings : dict
+        Settings
+    screen_size : dict
+        Providing Screen Size (Width and Height) to Class
+    chip_area : float
+        Area of chip in mm^2
+    img : MatLike
+        Image depicted with numbers to show which is point at
+    to_select : widget
+        Widget selection to be selected by user
+    selected : dict
+        Dict that holds the results of defects in pieces
+    """
+
     def __init__(self, settings, screen_size, chip_area, img, to_select, selected):
         Toplevel.__init__(self)
         self.initialize(settings, img)
@@ -15,11 +34,13 @@ class Selection(Toplevel):
         self.mainloop()
 
     def initialize(self, settings, img):
+        """Initialize variables"""
         self.set_names = settings["Names"]
         self.set_set = settings["Settings"]
         self.imgtk = cvt_image(img)
 
     def save_selected(self, chip_area, to_select, selected, drop_defect):
+        """Check condition for selected and save them"""
         for key, value in to_select.items():
             for k in range(len(value)):
                 chosen = drop_defect[key][k].get()
@@ -33,6 +54,7 @@ class Selection(Toplevel):
         self.quit()
 
     def win_config(self, screen_size):
+        """Tkinter Window Config"""
         self.title("Select the defect mode")
         self.geometry(
             f"{int(screen_size['w_screen']*0.7)}x{int(screen_size['h_screen']*0.9)}+30+10"
@@ -43,6 +65,7 @@ class Selection(Toplevel):
         self.frame.pack(fill=BOTH, expand=True)
 
     def widgets(self, chip_area, to_select, selected):
+        """Tkinter Widgets building"""
         # Display image on this container
         self.img_win = Label(self.frame, relief=SUNKEN, image=self.imgtk)
         self.img_win.grid(

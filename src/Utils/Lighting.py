@@ -4,11 +4,14 @@ from tkinter import messagebox
 
 
 class Lighting:
+    """Class for Lighting Controls"""
+
     def __init__(self, settings):
         self.trouble = settings["Settings"]["Troubleshoot"]["Trouble"]
         self.initialize(settings)
 
     def initialize(self, settings):
+        """Initialize variables"""
         if not self.trouble:
             lightipv4 = settings["Settings"]["Address"]["LightIPv4"]
             lightport = settings["Settings"]["Address"]["LightPORT"]
@@ -34,10 +37,12 @@ class Lighting:
                 sys.exit()
 
     def close(self):
-        if hasattr(self,"s"):
+        """Shut off Lighting to reset"""
+        if hasattr(self, "s"):
             self.s.close()
 
     def cvt_byte(self, code):
+        "Convert str to byte"
         arr = []
         for i in code:
             arr.append(ord(i))
@@ -46,6 +51,7 @@ class Lighting:
         return b_arr
 
     def light_switch(self, on=False):
+        """Light Switch function"""
         if not self.trouble:
             light_code = "@00L11D\r\n" if on else "@00L01C\r\n"
             b_light_arr = self.cvt_byte(light_code)
@@ -53,6 +59,7 @@ class Lighting:
             print(f"{b_light_arr} sent. Light turned {'on' if on else 'off'}.")
 
     def light_intense(self, settings):
+        """Update lighting intensity"""
         if not self.trouble:
             intensity = self.intense_util(settings["Settings"]["Config"]["Lighting"])
 
@@ -66,6 +73,7 @@ class Lighting:
             print(f"{b_command} sent. Light intensity changed to {intensity}.")
 
     def intense_util(self, value):
+        """Convert value to standard of 000 format"""
         if len(value) == 2:
             value = f"0{value}"
         elif len(value) == 1:

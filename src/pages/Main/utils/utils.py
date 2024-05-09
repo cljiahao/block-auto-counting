@@ -1,28 +1,14 @@
 import os
 import cv2
-import math
-import time
 import pandas as pd
 from tkinter import END
 from datetime import datetime as dt
 
 
-def time_print(start, func_name) -> None:
-    """
-    Parameters
-    ----------
-    start : float
-        Start time from previous recording
-    func_name : string
-        Description for previous recording
-    """
-    print(f"{func_name} took: {round(time.time()-start,2)} secs")
-
-    return time.time()
-
-
 def reset(capture, def_var, wos_var, chip_type):
+    """Reset Main Window"""
     capture.config(image="")
+    # Reset defect mode and value
     def_reset(def_var)
     for i, wos in enumerate(wos_var.keys()):
         if i == 0:
@@ -32,6 +18,7 @@ def reset(capture, def_var, wos_var, chip_type):
 
 
 def def_reset(def_var):
+    """Reset defect mode and value to update"""
     for def_mode in def_var:
         def_var[def_mode].config(text="0")
 
@@ -59,6 +46,7 @@ def save_excel(excel_path, def_var, numpad=False):
 
 
 def saveImg(self, img, timestp):
+    """Save Image to month year folder"""
     if not self.ini_config["Trouble"]:
         imgdir = os.path.join(self.path_block, dt.today().strftime("%b%y"))
         if not os.path.exists(imgdir):
@@ -69,6 +57,7 @@ def saveImg(self, img, timestp):
 
 
 def draw_img(img, contours, values=False):
+    """Draw on image based on requirements"""
     w_img, h_img = img.shape[:2]
     buffer = 50
     for i, cnt in enumerate(contours):
@@ -94,6 +83,7 @@ def draw_img(img, contours, values=False):
 
 
 def check_limits(center, limit, buffer):
+    """Prevent drawn text out of bounds"""
     if center - buffer < 0:
         center = center + buffer
     elif limit < center + buffer:

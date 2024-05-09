@@ -3,6 +3,7 @@ from tkinter import VERTICAL, FLAT, NS, NW, EW
 
 
 def scroll_cont(frame, canvas_size="8c"):
+    """Return Scrollable Container"""
     # Frame for holding Canvas
     frame_canvas = Frame(frame, bd=5, relief=FLAT)
     frame_canvas.rowconfigure(0, weight=1)

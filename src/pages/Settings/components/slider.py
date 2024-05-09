@@ -1,9 +1,11 @@
+from tkinter import ttk
 from tkinter import Label, Entry, IntVar
 from tkinter import HORIZONTAL, CENTER, E, W
-from tkinter import ttk
 
 
 def slider(frame_slide, set_names):
+    """Return widget components for adjust hsv colour via entry and sliders"""
+
     hsv_text = [
         "Low H: ",
         "High H: ",

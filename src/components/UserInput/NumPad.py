@@ -4,15 +4,16 @@ from tkinter import END
 
 class Numpad(Toplevel):
     """
-    Tkinter Component with One Entry Box
+    Numpad Window Component to input user input
+
     Parameters
     ----------
     parent : root
-        The parent root.
+        Parent root
     screen_size : dict
-        Providing Screen Size (Width and Height) to Class.
+        Providing Screen Size (Width and Height) to Class
     entry : Tkinter Component
-        Reference to Entry Box.
+        Reference to Entry Box
     """
 
     def __init__(self, parent, screen_size, entry):
@@ -21,6 +22,7 @@ class Numpad(Toplevel):
         self.widgets(entry)
 
     def win_config(self, screen_size):
+        """Tkinter Window Config"""
         self.geometry(
             f"{int(screen_size['w_screen']*0.17)}x{int(screen_size['h_screen']*0.4)}+{int(screen_size['w_screen']*0.75)}+20"
         )
@@ -28,6 +30,7 @@ class Numpad(Toplevel):
         self.but_height = int(screen_size["h_screen"] * 0.005)
 
     def widgets(self, entry):
+        """Tkinter Widgets building"""
         # Create Buttons 1-9 in a 3x3 Mat
         j = 0
         for i in range(9):
@@ -50,6 +53,7 @@ class Numpad(Toplevel):
             height=self.but_height,
             command=lambda: entry.insert(END, 0),
         ).grid(row=4, column=0, pady=5)
+
         # Create "." Button
         Button(
             self,
@@ -58,6 +62,7 @@ class Numpad(Toplevel):
             height=self.but_height,
             command=lambda: entry.insert(END, "."),
         ).grid(row=4, column=1, pady=5)
+
         # Create "Del" Button
         Button(
             self,

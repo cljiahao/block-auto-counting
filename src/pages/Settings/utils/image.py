@@ -4,8 +4,10 @@ from PIL import Image, ImageTk
 
 
 def filter_img(root, frame, entry_hsv):
+    """Return filtered image and mask combined"""
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV_FULL)
 
+    # Get HSV (LL,UL)
     hsv_low = []
     hsv_high = []
     for key, value in entry_hsv.items():
@@ -28,11 +30,13 @@ def filter_img(root, frame, entry_hsv):
     h1, w1 = res.shape[:2]
     h2, w2 = vis.shape[:2]
 
+    # Combine masked and filtered image
     concat = np.zeros((h1 + h2, max(w1, w2), 3), dtype=np.uint8)
     concat[:, :] = (255, 255, 255)
     concat[:h1, :w1, :3] = res
     concat[h1 : h1 + h2, :w2, :3] = vis
 
+    # Convert to Image type and resize
     img = Image.fromarray(concat)
     width = int(root.winfo_height() / (img.size[1] / img.size[0]))
     height = root.winfo_height()

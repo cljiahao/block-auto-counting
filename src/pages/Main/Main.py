@@ -2,10 +2,10 @@ import os
 from datetime import datetime as dt
 from tkinter import Tk, Frame, Label, Button, OptionMenu, StringVar
 from tkinter import BOTH, CENTER, FLAT, EW, S
+
 from pages.Main.components.defects import defect_list
 from pages.Main.components.image import show_image
 from pages.Main.components.wos import wos_entry
-
 from pages.Main.utils.check import input_retrieve
 from pages.Main.utils.routes import (
     show_accuracy,
@@ -13,18 +13,19 @@ from pages.Main.utils.routes import (
     show_summary,
     snap,
 )
-
-from components.Lighting.Lighting import Lighting
-
+from utils.Lighting import Lighting
 from utils.read_write import read_settings
 from utils.directory import dire
 
 
 class Main(Tk):
+    """Main Page for Block Auto Counting"""
+
     def __init__(self):
         self.refresh()
 
     def refresh(self):
+        """Refresh whole window when called"""
         Tk.__init__(self)
         self.initialize()
         self.win_config()
@@ -63,10 +64,11 @@ class Main(Tk):
         return True
 
     def cb_color(self, name, index, mode):
-        """Call backs for OptionMenu"""
+        """Call backs for OptionMenu to set Color"""
         self.drop_acc.config(bg=self.set_set["Accuracy"][self.getvar(name)]["Color"])
 
     def win_config(self):
+        """Tkinter Window Config"""
         self.title("Block Auto Cutting")
         self.state("zoomed")
         self.screen_size = {
@@ -79,12 +81,15 @@ class Main(Tk):
         self.frame.pack(fill=BOTH, expand=True)
 
     def widgets(self):
+        """Tkinter Widgets building"""
+        # Image container
         self.capture = show_image(self.frame, self.set_names)
 
         # FRAME: for creating Label for Defect Code, Defect Name, Defect Quantity
         frame_def = Frame(self.frame, bd=5, relief=FLAT)
         frame_def.grid(row=0, column=2, columnspan=2, pady=7, sticky=EW)
 
+        # Defects Codes, Modes and Placeholders
         self.def_var = defect_list(
             frame_def, self.settings, self.wos_var, self.screen_size, self.excel_path
         )
@@ -99,8 +104,10 @@ class Main(Tk):
         )
         frame_wos.columnconfigure(3, weight=1)
 
+        # Register for entry callbacks
         reg_entry = (self.register(self.cb_entry), "%P", "%W")
 
+        # Entry Boxes for Lot no, Payroll no, Machine no and Lot Quantity
         wos_entry(frame_wos, self.set_names, self.wos_var, reg_entry)
 
         # FRAME: for holding Chip Type and Accuracy Spinner Box
@@ -132,6 +139,7 @@ class Main(Tk):
         self.drop_acc["menu"].config(font=self.set_names["Font"]["L"])
         self.drop_acc.grid(row=0, column=4, columnspan=3, padx=(0, 10), pady=5)
 
+        # Register for optionmenu callbacks
         sel_acc.trace_add("write", self.cb_color)
 
         # FRAME: for holding Buttons
@@ -142,6 +150,7 @@ class Main(Tk):
             columnspan=6,
             sticky=EW,
         )
+
         # Summary Button
         Button(
             frame_button,
@@ -152,6 +161,7 @@ class Main(Tk):
                 self.settings, self.screen_size, self.wos_var, self.excel_path.get()
             ),
         ).grid(row=0, column=0, padx=5, pady=3, sticky=S)
+
         # Accuracy Button
         Button(
             frame_button,
@@ -165,6 +175,7 @@ class Main(Tk):
                 sel_acc.get(),
             ),
         ).grid(row=0, column=1, padx=5, pady=3, sticky=S)
+
         # Settings Button
         Button(
             frame_button,
@@ -180,6 +191,7 @@ class Main(Tk):
                 self.refresh,
             ),
         ).grid(row=0, column=2, padx=5, pady=3, sticky=S)
+
         # Snap Button
         Button(
             frame_button,

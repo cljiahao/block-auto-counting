@@ -5,6 +5,7 @@ from pages.Main.utils.routes import get_blade_data, get_num_input
 
 
 def defect_list(frame_def, settings, wos_var, screen_size, excel_path):
+    """Return widget components for showing defects"""
     set_names = settings["Names"]
     def_var = {}
     for a, def_name in enumerate(set_names["Defect Code"]):
@@ -17,6 +18,7 @@ def defect_list(frame_def, settings, wos_var, screen_size, excel_path):
         )
         # Defect Name
         if def_name in set_names["Defect Numpad"]:
+            # User Input ("DROPCHIP", "SAMPLE")
             Button(
                 frame_def,
                 text=def_name,
@@ -29,6 +31,7 @@ def defect_list(frame_def, settings, wos_var, screen_size, excel_path):
                     def_name,
                 ),
             ).grid(row=c, column=b + 1, pady=5, sticky=W)
+        # Blade Data Button
         elif def_name == "BLADE DATA":
             Button(
                 frame_def,

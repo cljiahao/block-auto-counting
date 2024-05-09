@@ -10,11 +10,33 @@ from utils.read_write import read_json
 
 
 class Summary(Toplevel):
-    def __init__(self, settings, screen_size, wos_var, excel_path):
-        self.initialize(settings, screen_size, wos_var, excel_path)
+    """Summary Page to show Overall Summary of Lot and to send to PRASS
+
+    Parameters
+    ----------
+    settings : dict
+        Settings
+    screen_size : dict
+        Providing Screen Size (Width and Height) to Class
+    lot_no : str
+        Lot Number
+    excel_path : str
+        Excel File Path
+    """
+
+    def __init__(self, settings, screen_size, lot_no, excel_path):
+        self.initialize(settings, screen_size, lot_no, excel_path)
         self.reset()
 
-    def initialize(self, settings, screen_size, wos_var, excel_path):
+    def reset(self):
+        """Refresh whole window when called"""
+        Toplevel.__init__(self)
+        self.win_config()
+        self.widgets()
+        self.grab_set()
+
+    def initialize(self, settings, screen_size, lot_no, excel_path):
+        """Initialize variables"""
         self.res = True
         self.settings = settings
         self.set_names = settings["Names"]
@@ -22,49 +44,51 @@ class Summary(Toplevel):
         self.set_set = settings["Settings"]
         self.blade_data = read_json("json/blade_data.json")
         self.screen_size = screen_size
-        self.wos_var = wos_var
+        self.lot_no = lot_no
         self.excel_path = excel_path
 
-    def reset(self):
-        Toplevel.__init__(self)
-        self.win_config()
-        self.widgets()
-        self.grab_set()
-
     def confirm(self, df):
-        if self.wos_var["Lot Number"].get() not in self.blade_data:
+        """Checks condition and send data to PRASS"""
+        # Check if Blade Data added to Lot No
+        if self.lot_no not in self.blade_data:
             messagebox.showerror(
                 title="No Blade Data", message="Please input blade data"
             )
             return
 
-        blade = self.blade_data[self.wos_var["Lot Number"].get()]
+        # Retrieve blade data
+        blade = self.blade_data[self.lot_no]
 
         if messagebox.askyesno(
             title="Send Data To PRASS", message="Confirm Send Data?"
         ):
-            new_df, res = send_PRASS(self.settings, self.wos_var, df, blade)
+            # Send to Prass
+            new_df, res = send_PRASS(self.settings, self.lot_no, df, blade)
             if res:
+                # Show Final Page Window to write on WOS
                 Final(
                     self.settings,
                     self.screen_size,
-                    self.wos_var["Lot Number"].get(),
+                    self.lot_no,
                     new_df,
                 )
                 self.destroy()
 
     def delete(self, df, index):
+        """Delete column of data"""
         df.drop(df.columns[[index]], axis=1, inplace=True)
         df.to_excel(self.excel_path, index=False, header=False)
         self.destroy()
         self.reset()
 
     def win_config(self):
+        """Tkinter Window Config"""
         self.title("Summary Window")
         self.frame = Frame(self)
         self.frame.pack(fill=BOTH, expand=True)
 
     def widgets(self):
+        """Tkinter Widgets building"""
         # FRAME: for creating Label for Lot Number Information
         frame_lot_no = Frame(self.frame, bd=5, relief=FLAT)
         frame_lot_no.grid(row=0, column=0, padx=3, pady=1, sticky=W)
@@ -72,7 +96,7 @@ class Summary(Toplevel):
         # Lot Number Text
         Label(
             frame_lot_no,
-            text=f"Lot Number : {self.wos_var['Lot Number'].get()}",
+            text=f"Lot Number : {self.lot_no['Lot Number'].get()}",
             font=self.set_names["Font"]["S"],
         ).grid(row=0, column=0, pady=1, sticky=W)
 
@@ -90,6 +114,7 @@ class Summary(Toplevel):
 
             max_rows, max_cols = df.shape
 
+            # Add Seperator between Header and Main
             Separator(self.frame, orient="horizontal").grid(
                 row=0, column=0, columnspan=max_cols, sticky=EW + S
             )

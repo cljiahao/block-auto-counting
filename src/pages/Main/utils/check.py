@@ -5,6 +5,7 @@ from pages.Main.utils.error import Custom_Exception
 
 
 def input_retrieve(address, lot_no, qty_entry, chip_type):
+    """Check Lot Number and return Chip Type"""
     url = address + lot_no
     res = requests.get(url)
     if not res.status_code == 200:
@@ -14,6 +15,7 @@ def input_retrieve(address, lot_no, qty_entry, chip_type):
                 "message": "Lot not Found in Database",
             }
         )
+    # TODO: create .env for column names
     qty_entry.delete(0, END)
     qty_entry.insert(0, res.json()["sun0011"])
     chip_code = (
@@ -25,6 +27,7 @@ def input_retrieve(address, lot_no, qty_entry, chip_type):
 
 
 def check_entry(settings, wos_var, bool=False):
+    """Check Entry Condition"""
     for key in settings["Names"]["WOS ERR"].keys():
         if key == "Lot Number" and len(wos_var[key].get()) != 10:
             raise Custom_Exception(settings["Names"]["WOS ERR"][key])

@@ -5,6 +5,7 @@ from PIL import Image as PilImg, ImageTk
 
 
 def cvt_image(img):
+    """Return converted image color and Resize"""
     img = PilImg.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     img = img.resize((int(img.size[0] * 0.75), int(img.size[1] * 0.75)))
     imgtk = ImageTk.PhotoImage(image=img)
@@ -12,8 +13,12 @@ def cvt_image(img):
 
 
 def get_defects(settings, image, cali_pixel, chip_type, mat):
+    """Return defects processed and image"""
+    # HSV range without Pin
     col_dict = get_col_dict(settings, mat)
+    # Processed Block image from Camera
     block = find_block(image)
+    # Stickers Mask from Block Image
     m_stickers = find_stickers(block, col_dict)
     # Dilate by factor for chip processing
     m_stickers = cv2.dilate(
@@ -29,12 +34,14 @@ def get_defects(settings, image, cali_pixel, chip_type, mat):
     contours, hier = cv2.findContours(
         m_stickers, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE
     )
+    # Defects processed and tabulated
     defects = get_defect_area(block, col_dict, cali_pixel, contours)
 
     return defects, block
 
 
 def get_col_dict(settings, mat):
+    """Return HSV Range without Pin"""
     col_dict = {}
     for colour, value in settings["Colors"].items():
         if colour == "Pin":
@@ -55,6 +62,7 @@ def get_col_dict(settings, mat):
 
 # TODO: Find out how to get the numbers for cornerharris and ranges
 def find_block(img):
+    """Return block image without background from camera"""
     blank = np.zeros(img.shape[:2], np.uint8)
     kernel = np.ones((5, 5), np.uint8)
 
@@ -101,6 +109,7 @@ def find_block(img):
 
 
 def find_stickers(img, col_dict):
+    """Return sticker mask image from block image"""
     hsv = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2HSV_FULL)
     blur = cv2.bilateralFilter(hsv, 50, 15, 15)
     mix = np.zeros(img.shape[:2], np.uint8)
@@ -122,6 +131,7 @@ def find_stickers(img, col_dict):
 
 
 def get_defect_area(img, col_dict, cali_pixel, contours):
+    """Return defect results and tabulation"""
     defects = {}
     blur = cv2.GaussianBlur(img.copy(), (5, 5), 0)
     hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV_FULL)
@@ -132,12 +142,14 @@ def get_defect_area(img, col_dict, cali_pixel, contours):
 
         real_size = cArea * cali_pixel
 
+        # Tabulate Sticker Colour and Size
         get_color_area(hsv, defects, col_dict, cnt, real_size)
 
     return defects
 
 
 def get_color_area(hsv, defects, col_dict, cnt, real_size):
+    """Return defect color and size"""
     blank = np.zeros(hsv.shape[:2], np.uint8)
     cv2.drawContours(blank, [cnt], 0, (255, 255, 255), -1)
     m_cnt = cv2.bitwise_and(hsv, hsv, mask=blank)

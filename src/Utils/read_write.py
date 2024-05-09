@@ -14,6 +14,7 @@ def read_settings():
 
 
 def read_json(file_path):
+    """Read json and read content"""
     with open(file_path, "r") as f:
         data = json.load(f)
 

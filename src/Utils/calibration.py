@@ -6,23 +6,17 @@ from pages.Main.utils.error import Custom_Exception
 
 
 def cali_hough(settings, mat, img_arr):
-    """
-    Mask image to retrieve far left Black pin contour
-    Parameters
-    ----------
-    settings : dict
-        Settings
-    img_arr : 3-D Image MAT Array
-        Src input image array
-    """
+    """Mask image to retrieve far left Black pin contour"""
     pix_arr = []
+    # Get HSV Range for Pin
     black_ll, black_ul = get_pin_col(settings, mat)
+    # Tabulate Pin Pixel
     for img in img_arr:
         get_pin(pix_arr, black_ll, black_ul, img)
 
     try:
+        # Get Best Pin Pixel and image
         non_empty_arr = [x for x in pix_arr if x != ""]
-
         area_pixel = max(set(non_empty_arr), key=pix_arr.count)
         cali_area = (int(settings["Settings"]["Config"]["Pin Size"]) / 2) ** 2 * math.pi
         cali_pixel = cali_area / area_pixel
@@ -39,6 +33,7 @@ def cali_hough(settings, mat, img_arr):
 
 
 def get_pin_col(settings, mat):
+    """Return HSV Range for Pin"""
     pin_col = settings["Colors"]["Pin"][mat]
     black_ll = np.array(
         [int(x) for x in pin_col["LL"].split(",")],
@@ -53,6 +48,7 @@ def get_pin_col(settings, mat):
 
 
 def get_pin(pix_arr, black_ll, black_ul, img):
+    """Return Pin ROI in image"""
     # TODO: Fixed Area for calibration pin
     img = img[800:950, 50:250]
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
