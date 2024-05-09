@@ -116,10 +116,6 @@ def find_stickers(img, col_dict):
             dilate = cv2.dilate(morph, None)
             mix = cv2.bitwise_or(mix, dilate)
 
-    mix = cv2.morphologyEx(
-        mix, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8), iterations=2
-    )
-
     return mix
 
 
