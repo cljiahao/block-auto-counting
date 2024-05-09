@@ -1,26 +1,32 @@
-from tkinter import Button, Entry, LabelFrame, Toplevel, Frame, Label
+from tkinter import Button, LabelFrame, Toplevel, Frame, Label
 from tkinter import BOTH, NS, EW, E, W
 
 from pages.Settings.components.scroll_cont import scroll_cont
 
 
 class StaticNames(Toplevel):
+    """
+    StaticNames Window Component
+
+    Parameters
+    ----------
+    root: root
+        Parent root
+    """
+
     def __init__(self, root):
         Toplevel.__init__(self)
         self.initialize(root)
         self.win_config()
         self.widgets()
         self.grab_set()
-        self.mainloop()
 
     def initialize(self, root):
+        """Initialize variables"""
         self.set_names = root.set_names
 
-    def exit(self):
-        self.destroy()
-        self.quit()
-
     def win_config(self):
+        """Tkinter Window Config"""
         self.title("Static Name Config")
         self.geometry("+800+50")
         self.frame = Frame(self)
@@ -28,7 +34,7 @@ class StaticNames(Toplevel):
         self.frame.pack(fill=BOTH, expand=True)
 
     def widgets(self):
-
+        """Tkinter Widgets building"""
         s_font = self.set_names["Font"]["S"]
         m_font = self.set_names["Font"]["M"]
 
@@ -39,6 +45,7 @@ class StaticNames(Toplevel):
         frame_main.columnconfigure(2, weight=1)
         frame_main.grid(row=0, column=0)
 
+        # Scrollbar container
         frame_def_stick = scroll_cont(frame_main, "7c")
 
         # Chip - Colour : Defect Mode
@@ -54,6 +61,7 @@ class StaticNames(Toplevel):
             i += 1
             for val in value.items():
                 for j, v in enumerate(val):
+                    # Return Colour and Mode
                     Label(frame_def_stick, text=v, font=s_font, relief="groove").grid(
                         row=i,
                         column=j + 1,
@@ -72,5 +80,5 @@ class StaticNames(Toplevel):
 
         # Cancel Button
         Button(
-            frame_buttons, text="Cancel", font=m_font, command=lambda: self.exit()
+            frame_buttons, text="Cancel", font=m_font, command=lambda: self.destroy()
         ).grid(row=0, column=0, padx=10, pady=10, sticky=NS + EW)

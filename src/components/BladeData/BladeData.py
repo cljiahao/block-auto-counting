@@ -6,6 +6,19 @@ from utils.read_write import read_json, write_json
 
 
 class BladeData(Toplevel):
+    """
+    Blade Data Component to input blade data information
+
+    Parameters
+    ----------
+    settings : dict
+        Settings
+    lot_no : str
+        Lot Number
+    label : widget
+        Label Widget to update the label text
+    """
+
     def __init__(self, settings, lot_no, label):
         Toplevel.__init__(self)
         self.initialize(settings, lot_no, label)
@@ -14,13 +27,16 @@ class BladeData(Toplevel):
         self.grab_set()
 
     def initialize(self, settings, lot_no, label):
+        """Initialize variables"""
         self.set_names = settings["Names"]
         self.lot_no = lot_no
         self.label = label
         self.blade_data = read_json("json/blade_data.json")
+        # Open Window's Keyboard
         subprocess.Popen("osk", stdout=subprocess.PIPE, shell=True)
 
     def confirm(self):
+        """To Confirm data and write it to json for holding"""
         if self.lot_no not in self.blade_data:
             self.blade_data[self.lot_no] = {}
         self.sel_blade.update(self.entry_blade)
@@ -31,6 +47,7 @@ class BladeData(Toplevel):
         self.destroy()
 
     def win_config(self):
+        """Tkinter Window Config"""
         self.title("Blade Data Input Screen")
         self.geometry("+50+50")
         self.frame = Frame(self)
@@ -39,6 +56,7 @@ class BladeData(Toplevel):
         self.frame.pack(fill=BOTH, expand=True)
 
     def widgets(self):
+        """Tkinter Widgets building"""
         # FRAME: for Blade Data
         frame_blade = Frame(self.frame, bd=5, relief=FLAT)
         frame_blade.columnconfigure(1, weight=1)
@@ -84,6 +102,7 @@ class BladeData(Toplevel):
                 self.entry_blade[txt].insert(0, value)
                 self.entry_blade[txt].grid(row=i, column=1, padx=10, pady=10, sticky=EW)
 
+        # Button to save input to holder
         Button(
             frame_blade,
             text="Submit",

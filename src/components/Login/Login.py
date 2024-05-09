@@ -5,17 +5,14 @@ from tkinter import END
 
 class Login(Toplevel):
     """
-    Tkinter Component with Simple Login Page
+    Login Window Component
+
     Parameters
     ----------
-    settings: dict
+    settings : dict
         Settings
     screen_size : dict
-        Providing Screen Size (Width and Height) to Class.
-    cap : VideoCapture
-        Returns a tuple (success, frame)
-    light : Lighting Component
-        Instantiate Lighting Component to pass to next Class
+        Providing Screen Size (Width and Height) to Class
     """
 
     def __init__(self, settings, screen_size):
@@ -27,11 +24,14 @@ class Login(Toplevel):
         self.mainloop()
 
     def initialize(self, settings):
+        """Initialize variables"""
         self.set_set = settings["Settings"]
         self.res = [False, False]
+        # Open Window's Keyboard
         subprocess.Popen("osk", stdout=subprocess.PIPE, shell=True)
 
     def check_login(self, string_var, log_entry):
+        """Check Login condition"""
         for cred in self.set_set["Credentials"].values():
             if cred["Username"] == string_var["Username"].get():
                 if cred["Password"] == string_var["Password"].get():
@@ -53,6 +53,7 @@ class Login(Toplevel):
         return
 
     def win_config(self, screen_size):
+        """Tkinter Window Config"""
         self.title("ME Login")
         self.config(bg="lightgrey", bd=50)
         self.geometry(
@@ -63,20 +64,27 @@ class Login(Toplevel):
         self.columnconfigure(4, weight=1)
 
     def widgets(self):
+        """Tkinter Widgets building"""
+        # Bad Login Label
         self.bad_login = Label(self, bg="#fa6464")
+
         credentials = list(self.set_set["Credentials"].values())[0]
         string_var = {}
         entry_log = {}
         for i, cred in enumerate(credentials):
             if i == 2:
                 break
+            # Label for User and Password
             Label(self, text=cred + " :", background="lightgrey").grid(row=i, column=1)
             string_var[cred] = StringVar()
+            # Entry for User and Password
             entry_log[cred] = Entry(self, textvariable=string_var[cred])
+            # If Password, show * instead of string
             if cred.lower() == "password":
                 entry_log[cred].config(show="*")
             entry_log[cred].grid(row=i, column=2, columnspan=2)
 
+        # Login Button
         Button(
             self, text="Login", command=lambda: self.check_login(string_var, entry_log)
         ).grid(row=6, column=2, columnspan=2)

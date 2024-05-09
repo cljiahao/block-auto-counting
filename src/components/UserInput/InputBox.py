@@ -6,14 +6,16 @@ from components.UserInput.NumPad import Numpad
 
 class InputBox(Toplevel):
     """
-    Tkinter Component with One Entry Box
+    InputBox Window Component to input user input from Numpad
+
     Parameters
     ----------
-
+    settings : dict
+        Settings
     screen_size : dict
-        Providing Screen Size (Width and Height) to Class.
+        Providing Screen Size (Width and Height) to Class
     text : str
-        Reference Name for Entry Box.
+        Reference Name for Entry Box
     """
 
     def __init__(self, settings, screen_size, text):
@@ -26,6 +28,7 @@ class InputBox(Toplevel):
         self.mainloop()
 
     def initialize(self, settings):
+        """Initialize variables"""
         self.set_name = settings["Names"]
         self.input_val = StringVar(self)
 
@@ -35,6 +38,7 @@ class InputBox(Toplevel):
         self.quit()
 
     def win_config(self, screen_size, text):
+        """Tkinter Window Config"""
         self.geometry(
             f"{int(screen_size['w_screen']*0.5)}x{int(screen_size['h_screen']*0.17)}+{int(screen_size['w_screen']*0.1)}+20"
         )
@@ -43,16 +47,18 @@ class InputBox(Toplevel):
         self.columnconfigure(4, weight=1)
 
     def widget(self, text):
-        """Create Label, Entry and Button"""
-        # Label
+        """Tkinter Widgets building"""
+        # Label for input Quantity
         Label(
             self, text=f"Input Quantity for {text}", font=self.set_name["Font"]["L"]
         ).grid(row=0, column=1, pady=20, padx=7, sticky=W)
-        # Entry Box
+
+        # Entry Box for input Quantity
         self.entry = Entry(
             self, textvariable=self.input_val, font=self.set_name["Font"]["L"]
         )
         self.entry.grid(row=0, column=2, columnspan=2, pady=20, padx=7)
+
         # Submit Button
         Button(
             self,
