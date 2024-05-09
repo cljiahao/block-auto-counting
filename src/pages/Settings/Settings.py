@@ -26,15 +26,15 @@ from utils.read_write import read_settings
 
 
 class Settings(Toplevel):
-    def __init__(self, light, superuser):
+    def __init__(self, mode, light, superuser):
         Toplevel.__init__(self)
-        self.initialize(light)
+        self.initialize(mode, light)
         self.win_config()
         self.widgets(superuser)
         self.grab_set()
         self.mainloop()
 
-    def initialize(self, light):
+    def initialize(self, mode, light):
         self.res = False
         settings = read_settings()
         self.set_names = settings["Names"]
@@ -45,7 +45,7 @@ class Settings(Toplevel):
         self.light = light
         self.troubleshoot = self.set_set["Troubleshoot"]
         if self.troubleshoot["Trouble"]:
-            file_lists = os.listdir(dire.path_trouble)
+            file_lists = [file for file in os.listdir(dire.path_trouble) if mode in file]
             file_name = (
                 random.sample(file_lists, 1)[0]
                 if self.troubleshoot["File Name"] == ""

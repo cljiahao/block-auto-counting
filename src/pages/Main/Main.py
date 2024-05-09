@@ -176,6 +176,7 @@ class Main(Tk):
                 self.settings,
                 self.screen_size,
                 self.light,
+                sel_acc.get(),
                 self.refresh,
             ),
         ).grid(row=0, column=2, padx=5, pady=3, sticky=S)
