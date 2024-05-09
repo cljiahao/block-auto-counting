@@ -29,8 +29,6 @@ def color_container(frame_colors, root):
         )
         i += 1
         for mat, val in value.items():
-            if mat == "Chip Type":
-                continue
             # Material Label
             Label(frame_canvas_colors, text=mat, font=font).grid(
                 row=i, column=0, padx=5, pady=5, sticky=E
@@ -40,6 +38,8 @@ def color_container(frame_colors, root):
                 hsv_val = Label(frame_canvas_colors, text=val[k], font=font)
                 if col not in root.set_colors:
                     hsv_val.config(bg="#93D976")
+                elif mat not in root.set_colors[col]:
+                    hsv_val.config(bg="#FFFF80")
                 elif val[k] != root.set_colors[col][mat][k]:
                     hsv_val.config(bg="#fa6464")
                 hsv_val.grid(row=i, column=j + 1, padx=5, pady=5)
