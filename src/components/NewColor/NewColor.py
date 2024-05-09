@@ -50,7 +50,7 @@ class NewColor(Toplevel):
         # Add new Colours or Update
         col = col_entry.get()
         if (text == "new" and (col == "" or col in self.set_holder)) or (
-            text == "update" and col not in self.set_holder
+            col not in self.set_holder and (text == "update" or text == "remove")
         ):
             col_entry.config(bg="#fa6464")
             return
@@ -62,7 +62,14 @@ class NewColor(Toplevel):
             if text == "new" and (v == "" or col in self.set_set["Accuracy"][mat]):
                 value.config(bg="#fa6464")
                 return
-            acc_dict[key] = v
+            if (
+                v != ""
+                or col not in self.set_set["Accuracy"][mat]
+                or key not in self.set_set["Accuracy"][mat][col]
+            ):
+                acc_dict[key] = v
+            elif text != "remove":
+                acc_dict[key] = self.set_set["Accuracy"][mat][col][key]
 
         # Add new defect mode
         for chip in chips:
@@ -80,10 +87,16 @@ class NewColor(Toplevel):
                 return
 
         # Update after all check is done
-        if text == "new":
-            self.set_set["Accuracy"][mat].update({col: acc_dict})
+        if col in self.set_holder:
+            if text == "remove" and mat in self.set_holder[col]:
+                del self.set_holder[col][mat]
+            else:
+                self.set_holder[col].update({mat: ll_ul})
+        else:
             self.set_holder[col] = {mat: ll_ul}
-+
+
+        self.set_set["Accuracy"][mat].update({col: acc_dict})
+
         for chip in self.set_names["Defect Sticker"]:
             if text == "remove" and col in self.set_names["Defect Sticker"][chip]:
                 del self.set_names["Defect Sticker"][chip][col]
@@ -200,10 +213,10 @@ class NewColor(Toplevel):
         )
 
         # FRAME: Frame for buttons
-
         frame_buttons = Frame(self.frame)
         frame_buttons.columnconfigure(0, weight=1)
         frame_buttons.columnconfigure(1, weight=1)
+        frame_buttons.columnconfigure(2, weight=1)
         frame_buttons.grid(
             row=4, column=0, columnspan=2, padx=5, pady=5, sticky=NS + EW
         )
@@ -239,3 +252,20 @@ class NewColor(Toplevel):
                 acc_entry,
             ),
         ).grid(row=0, column=1, padx=10, pady=10, sticky=NS + EW)
+
+        # Remove Button
+        Button(
+            frame_buttons,
+            text="Remove",
+            font=self.set_names["Font"]["M"],
+            bg="#fa6565",
+            command=lambda: self.edit_col(
+                "remove",
+                ll_ul,
+                sel_mat.get(),
+                [i for i in sel_chip if sel_chip[i].get() == 1],
+                sel_mode.get(),
+                col_entry,
+                acc_entry,
+            ),
+        ).grid(row=0, column=2, padx=10, pady=10, sticky=NS + EW)
