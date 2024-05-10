@@ -18,14 +18,14 @@ class Summary(Toplevel):
         Settings
     screen_size : dict
         Providing Screen Size (Width and Height) to Class
-    lot_no : str
-        Lot Number
+    wos_var : dict
+        Dictionary of Entry (Lot No, Payroll No, Machine No and Lot Quantity)
     excel_path : str
         Excel File Path
     """
 
-    def __init__(self, settings, screen_size, lot_no, excel_path):
-        self.initialize(settings, screen_size, lot_no, excel_path)
+    def __init__(self, settings, screen_size, wos_var, excel_path):
+        self.initialize(settings, screen_size, wos_var, excel_path)
         self.reset()
 
     def reset(self):
@@ -35,7 +35,7 @@ class Summary(Toplevel):
         self.widgets()
         self.grab_set()
 
-    def initialize(self, settings, screen_size, lot_no, excel_path):
+    def initialize(self, settings, screen_size, wos_var, excel_path):
         """Initialize variables"""
         self.res = True
         self.settings = settings
@@ -44,7 +44,8 @@ class Summary(Toplevel):
         self.set_set = settings["Settings"]
         self.blade_data = read_json("json/blade_data.json")
         self.screen_size = screen_size
-        self.lot_no = lot_no
+        self.wos_var = wos_var
+        self.lot_no = wos_var["Lot Number"].get()
         self.excel_path = excel_path
 
     def confirm(self, df):
@@ -63,7 +64,7 @@ class Summary(Toplevel):
             title="Send Data To PRASS", message="Confirm Send Data?"
         ):
             # Send to Prass
-            new_df, res = send_PRASS(self.settings, self.lot_no, df, blade)
+            new_df, res = send_PRASS(self.settings, self.wos_var, df, blade)
             if res:
                 # Show Final Page Window to write on WOS
                 Final(
@@ -96,7 +97,7 @@ class Summary(Toplevel):
         # Lot Number Text
         Label(
             frame_lot_no,
-            text=f"Lot Number : {self.lot_no['Lot Number'].get()}",
+            text=f"Lot Number : {self.lot_no}",
             font=self.set_names["Font"]["S"],
         ).grid(row=0, column=0, pady=1, sticky=W)
 

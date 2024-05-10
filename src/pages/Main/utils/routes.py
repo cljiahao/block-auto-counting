@@ -67,7 +67,7 @@ def show_summary(settings, screen_size, wos_var, excel_path):
         # Check if all entry fits condition
         check_entry(settings, wos_var, True)
         # Open Summary window
-        Summary(settings, screen_size, wos_var["Lot Number"].get(), excel_path)
+        Summary(settings, screen_size, wos_var, excel_path)
 
     except Custom_Exception as e:
         messagebox.showerror(**eval(str(e)))
