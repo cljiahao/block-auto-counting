@@ -31,12 +31,12 @@ def send_PRASS(settings, wos_var, df, blade):
     """
 
     # To Send via HTTP
-    files = {"file": open(os.path.join(file_path), "rb")}
+    files = {"file": open(file_path, "rb")}
     resp = requests.post(settings["Settings"]["Address"]["fileServer"], files=files)
 
     print(f"fileSize: {int(resp.content)}")
     # Request OK, bring up website and final quantity for final cross check
-    return new_df, int(resp.content) == os.stat(os.path.join(file_path)).st_size
+    return new_df, int(resp.content) == os.stat(file_path).st_size
 
 
 def create_PRASS_txt(settings, wos_var, new_df, blade):
