@@ -12,7 +12,7 @@ from pages.Settings.components.slider import slider
 from pages.Settings.components.tabs_settings import tabs_settings
 from pages.Main.utils.camera import camera
 from pages.Settings.utils.image import filter_img
-from utils.directory import dire
+from core.directory import dire
 from utils.read_write import read_settings
 
 
@@ -50,13 +50,13 @@ class Settings(Toplevel):
         self.troubleshoot = self.set_set["Troubleshoot"]
         # Random pick troubleshoot image based on material selection on Main Page
         if self.troubleshoot["Trouble"]:
-            file_lists = [file for file in os.listdir(dire.path_trouble) if mat in file]
+            file_lists = [file for file in os.listdir(dire.trouble_dir) if mat in file]
             file_name = (
                 random.sample(file_lists, 1)[0]
                 if self.troubleshoot["File Name"] == ""
                 else self.troubleshoot["File Name"]
             )
-            self.file_path = os.path.join(dire.path_trouble, file_name)
+            self.file_path = os.path.join(dire.trouble_dir, file_name)
         else:
             self.light.light_switch(True)
 

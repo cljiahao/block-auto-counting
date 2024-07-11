@@ -31,7 +31,7 @@ class BladeData(Toplevel):
         self.set_names = settings["Names"]
         self.lot_no = lot_no
         self.label = label
-        self.blade_data = read_json("json/blade_data.json")
+        self.blade_data = read_json("core/json/blade_data.json")
         # Open Window's Keyboard
         subprocess.Popen("osk", stdout=subprocess.PIPE, shell=True)
 
@@ -42,7 +42,7 @@ class BladeData(Toplevel):
         self.sel_blade.update(self.entry_blade)
         for txt, value in self.sel_blade.items():
             self.blade_data[self.lot_no][txt] = value.get().strip()
-        write_json("json/blade_data.json", self.blade_data)
+        write_json("core/json/blade_data.json", self.blade_data)
         self.label.config(text="Added", bg="#93D976")
         self.destroy()
 

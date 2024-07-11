@@ -4,9 +4,9 @@ import json
 def read_settings():
     """Get settings data that does not need to be written back \n
     by reading json file consisting basic setting information"""
-    settings = read_json("json/settings.json")
-    def_code = read_json("json/staticnames.json")
-    color = read_json("json/colors.json")
+    settings = read_json("core/json/settings.json")
+    def_code = read_json("core/json/staticnames.json")
+    color = read_json("core/json/colors.json")
     settings.update(def_code)
     settings.update(color)
 

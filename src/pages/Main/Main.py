@@ -15,7 +15,7 @@ from pages.Main.utils.routes import (
 )
 from utils.Lighting import Lighting
 from utils.read_write import read_settings
-from utils.directory import dire
+from core.directory import dire
 
 
 class Main(Tk):
@@ -52,7 +52,7 @@ class Main(Tk):
             )
             self.excel_path.set(
                 os.path.join(
-                    dire.path_excel, dt.today().strftime("%b%y"), input + ".xlsx"
+                    dire.excel_dir, dt.today().strftime("%b%y"), input + ".xlsx"
                 )
             )
             self.def_var["BLADE DATA"].config(text="Added", bg="#93D976")

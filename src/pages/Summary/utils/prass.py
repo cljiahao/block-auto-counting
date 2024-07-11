@@ -4,7 +4,8 @@ import pandas as pd
 from tkinter import messagebox
 from datetime import datetime as dt
 
-from utils.directory import dire
+from core.directory import dire
+from core.logging import logger
 
 
 def send_PRASS(settings, wos_var, df, blade):
@@ -34,7 +35,7 @@ def send_PRASS(settings, wos_var, df, blade):
     files = {"file": open(file_path, "rb")}
     resp = requests.post(settings["Settings"]["Address"]["fileServer"], files=files)
 
-    print(f"fileSize: {int(resp.content)}")
+    logger.info("fileSize: %s", int(resp.content))
     # Request OK, bring up website and final quantity for final cross check
     return new_df, int(resp.content) == os.stat(file_path).st_size
 
@@ -72,7 +73,7 @@ def create_PRASS_txt(settings, wos_var, new_df, blade):
     p_data = f"{lot_no}|{mc_no}|{pay_roll}|{date}|{time}|{in_qty}|{new_df.loc['Output','Total']}|{blade_str}|{prass_def}"
 
     # Make month year folder to save txt in
-    folder_path = os.path.join(dire.path_prass, dt.today().strftime("%b%y"))
+    folder_path = os.path.join(dire.prass_dir, dt.today().strftime("%b%y"))
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
 

@@ -4,7 +4,7 @@ import random
 from datetime import datetime as dt
 
 from utils.calibration import cali_hough
-from utils.directory import dire
+from core.directory import dire
 from utils.features import get_defects
 
 
@@ -30,7 +30,7 @@ def prep_cam(settings, light, mat, troubleshoot):
     """Return arr of images for calibration to choose best image"""
     img_arr = []
     if troubleshoot["Trouble"]:
-        file_lists = os.listdir(dire.path_trouble)
+        file_lists = os.listdir(dire.trouble_dir)
         file_names = [fname for fname in file_lists if mat in fname]
         file_name = (
             random.sample(file_names, 1)[0]
@@ -38,7 +38,7 @@ def prep_cam(settings, light, mat, troubleshoot):
             else troubleshoot["File Name"]
         )
         # TODO: Check if exists
-        file_path = os.path.join(dire.path_trouble, file_name)
+        file_path = os.path.join(dire.trouble_dir, file_name)
         img = cv2.imread(file_path)
         img_arr.append(img)
 
@@ -77,9 +77,9 @@ def save_img(img, mat, save_path):
     # Save to trouble with a random small chance for troubleshooting
     rand_digit = random.randrange(0, 1000) / 1000
     if rand_digit < 0.05:
-        if not os.path.exists(dire.path_trouble):
-            os.makedirs(dire.path_trouble)
+        if not os.path.exists(dire.trouble_dir):
+            os.makedirs(dire.trouble_dir)
         file_path = os.path.join(
-            dire.path_trouble, f"{mat}_{now.strftime('%d-%m-%y')}.png"
+            dire.trouble_dir, f"{mat}_{now.strftime('%d-%m-%y')}.png"
         )
         cv2.imwrite(file_path, img)

@@ -3,6 +3,7 @@ import math
 import numpy as np
 
 from pages.Main.utils.error import Custom_Exception
+from core.logging import logger
 
 
 def cali_hough(settings, mat, img_arr):
@@ -19,8 +20,8 @@ def cali_hough(settings, mat, img_arr):
         non_empty_arr = [x for x in pix_arr if x != ""]
         area_pixel = max(set(non_empty_arr), key=pix_arr.count)
         cali_area = (int(settings["Settings"]["Config"]["Pin Size"]) / 2) ** 2 * math.pi
-        cali_pixel = cali_area / area_pixel
-        print(f"Calibration Pin: {cali_pixel:.4f} mm^2/pixel")
+        cali_pixel = f"{cali_area / area_pixel:.4f}"
+        logger.info("Calibration Pin: %s mm^2/pixel", cali_pixel)
 
         return img_arr[pix_arr.index(area_pixel)], cali_pixel
     except:

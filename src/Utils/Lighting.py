@@ -2,6 +2,8 @@ import sys
 import socket
 from tkinter import messagebox
 
+from core.logging import logger
+
 
 class Lighting:
     """Class for Lighting Controls"""
@@ -16,7 +18,7 @@ class Lighting:
             lightipv4 = settings["Settings"]["Address"]["LightIPv4"]
             lightport = settings["Settings"]["Address"]["LightPORT"]
             self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            print(f"Connecting to {lightipv4} at {lightport}")
+            logger.info("Connecting to %s at %s", lightipv4, lightport)
             self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
             try:
@@ -26,14 +28,16 @@ class Lighting:
                         int(lightport),
                     )
                 )
-                print(f"Connected to {lightipv4} at {lightport}")
+                logger.info("Connected to %s at %s", lightipv4, lightport)
                 self.light_switch()
             except (ConnectionRefusedError, TimeoutError):
                 messagebox.showerror(
                     "Connection Error",
                     "Connection to Lighting Controller Error. \nPlease Restart Controller",
                 )
-                print(f"Error Connecting to {lightipv4} at {lightport}")
+                logger.error(
+                    "Error Connecting to %s at %s", lightipv4, lightport, exc_info=True
+                )
                 sys.exit()
 
     def close(self):
@@ -56,7 +60,7 @@ class Lighting:
             light_code = "@00L11D\r\n" if on else "@00L01C\r\n"
             b_light_arr = self.cvt_byte(light_code)
             self.s.send(b_light_arr)
-            print(f"{b_light_arr} sent. Light turned {'on' if on else 'off'}.")
+            logger.info("%s sent. Light turned %s.", b_light_arr, "on" if on else "off")
 
     def light_intense(self, settings):
         """Update lighting intensity"""
@@ -70,7 +74,7 @@ class Lighting:
 
             b_command = self.cvt_byte(command)
             self.s.send(b_command)
-            print(f"{b_command} sent. Light intensity changed to {intensity}.")
+            logger.info("%s sent. Light intensity changed to %s.", b_command, intensity)
 
     def intense_util(self, value):
         """Convert value to standard of 000 format"""

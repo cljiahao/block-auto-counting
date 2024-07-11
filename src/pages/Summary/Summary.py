@@ -42,7 +42,7 @@ class Summary(Toplevel):
         self.set_names = settings["Names"]
         self.set_colors = settings["Colors"]
         self.set_set = settings["Settings"]
-        self.blade_data = read_json("json/blade_data.json")
+        self.blade_data = read_json("core/json/blade_data.json")
         self.screen_size = screen_size
         self.wos_var = wos_var
         self.lot_no = wos_var["Lot Number"].get()
