@@ -135,6 +135,7 @@ def get_defect_area(img, col_dict, cali_pixel, contours):
     defects = {}
     blur = cv2.GaussianBlur(img.copy(), (5, 5), 0)
     hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV_FULL)
+    cali_pixel = float(cali_pixel) #convert cali_pixel to float
     for cnt in contours:
         cArea = cv2.contourArea(cnt)
         if 1000000 < cArea or cArea < 50:
