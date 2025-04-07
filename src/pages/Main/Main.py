@@ -15,7 +15,7 @@ from pages.Main.utils.routes import (
 )
 from utils.Lighting import Lighting
 from utils.read_write import read_settings
-from core.directory import dire
+from core.directory_manager import directory_manager as dm
 
 
 class Main(Tk):
@@ -51,9 +51,7 @@ class Main(Tk):
                 self.chip_type_var,
             )
             self.excel_path.set(
-                os.path.join(
-                    dire.excel_dir, dt.today().strftime("%b%y"), input + ".xlsx"
-                )
+                os.path.join(dm.excel_dir, dt.today().strftime("%b%y"), input + ".xlsx")
             )
             self.def_var["BLADE DATA"].config(text="Added", bg="#93D976")
             self.wos_var["Payroll Number"].focus()

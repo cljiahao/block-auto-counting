@@ -15,7 +15,7 @@ from pages.Main.utils.error import Custom_Exception
 from pages.Main.utils.utils import def_reset, draw_img, save_excel
 from pages.Settings.Settings import Settings
 from pages.Summary.Summary import Summary
-from core.directory import dire
+from core.directory_manager import directory_manager as dm
 from utils.features import cvt_image
 from utils.misc import time_print
 
@@ -87,7 +87,7 @@ def show_accuracy(settings, screen_size, light, mat):
         new_start = time_print(time.time(), "Initialize")
 
         defects, block = process_img(
-            settings, light, mat, chip_type, troubleshoot, dire.acc_dir
+            settings, light, mat, chip_type, troubleshoot, dm.acc_dir
         )
         new_start = time_print(new_start, "Processing Image")
 
@@ -176,7 +176,7 @@ def snap(
         new_start = time_print(time.time(), "Initialize")
 
         defects, block = process_img(
-            settings, light, mat, chip_type, troubleshoot, dire.block_dir
+            settings, light, mat, chip_type, troubleshoot, dm.block_dir
         )
         new_start = time_print(new_start, "Processing Image")
 
