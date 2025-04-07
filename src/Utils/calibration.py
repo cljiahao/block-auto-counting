@@ -16,8 +16,8 @@ def cali_hough(settings, mat, img):
     try:
         # Get Best Pin Pixel and image
         cali_area = (int(settings["Settings"]["Config"]["Pin Size"]) / 2) ** 2 * math.pi
-        cali_pixel = f"{cali_area / area_pixel:.4f}"
-        logger.info("Calibration Pin: %s mm^2/pixel", cali_pixel)
+        cali_pixel = round(cali_area / area_pixel, 4)
+        logger.info(f"Calibration Pin: {cali_pixel} mm^2/pixel")
 
         return cali_pixel
     except:
