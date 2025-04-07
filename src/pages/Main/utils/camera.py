@@ -19,16 +19,15 @@ def camera(settings):
 
 def process_img(settings, light, mat, chip_type, troubleshoot, save_path):
     """Main function to process image. Return defects results and block image with drawings."""
-    img_arr = prep_cam(settings, light, mat, troubleshoot)
-    image, cali_pixel = cali_hough(settings, mat, img_arr)
-    save_img(image, mat, save_path)
-    defects, block = get_defects(settings, image, cali_pixel, chip_type, mat)
+    img = prep_cam(settings, light, mat, troubleshoot)
+    cali_pixel = cali_hough(settings, mat, img)
+    save_img(img, mat, save_path)
+    defects, block = get_defects(settings, img, cali_pixel, chip_type, mat)
     return defects, block
 
 
 def prep_cam(settings, light, mat, troubleshoot):
     """Return arr of images for calibration to choose best image"""
-    img_arr = []
     if troubleshoot["Trouble"]:
         file_lists = os.listdir(dire.trouble_dir)
         file_names = [fname for fname in file_lists if mat in fname]
@@ -40,28 +39,40 @@ def prep_cam(settings, light, mat, troubleshoot):
         # TODO: Check if exists
         file_path = os.path.join(dire.trouble_dir, file_name)
         img = cv2.imread(file_path)
-        img_arr.append(img)
 
     else:
         light.light_switch(True)
         cap = camera(settings)
-        for i in range(13):
+        base_img_bgr = {"B": 0, "G": 0, "R": 0, "count": 0}
+        for _ in range(50):
             img = cap.read()[1]
-            if i > 3:
-                img_arr.append(
-                    img[
-                        :,
-                        int(
-                            int(settings["Settings"]["Config"]["CamResWidth"]) / 6
-                        ) : int(
-                            int(settings["Settings"]["Config"]["CamResWidth"]) / 6 * 5
-                        ),
-                    ]
-                )
+            new_img = img[
+                :,
+                int(int(settings["Settings"]["Config"]["CamResWidth"]) / 6) : int(
+                    int(settings["Settings"]["Config"]["CamResWidth"]) / 6 * 5
+                ),
+            ]
+            long_exposure(base_img_bgr, new_img)
+
+        total = base_img_bgr.pop("count")
+        bgr_arr = [color / total for color in base_img_bgr.values()]
+        img = cv2.merge(bgr_arr).astype("uint8")
+
         cap.release()
         light.light_switch()
 
-    return img_arr
+    return img
+
+
+def long_exposure(base_img_bgr, new_img):
+    """Create long exposure to sharpen image"""
+
+    (B, G, R) = cv2.split(new_img.astype("float"))
+
+    base_img_bgr["B"] += B
+    base_img_bgr["G"] += G
+    base_img_bgr["R"] += R
+    base_img_bgr["count"] += 1
 
 
 def save_img(img, mat, save_path):

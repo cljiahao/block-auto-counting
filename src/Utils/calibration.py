@@ -6,24 +6,20 @@ from pages.Main.utils.error import Custom_Exception
 from core.logging import logger
 
 
-def cali_hough(settings, mat, img_arr):
+def cali_hough(settings, mat, img):
     """Mask image to retrieve far left Black pin contour"""
-    pix_arr = []
     # Get HSV Range for Pin
     black_ll, black_ul = get_pin_col(settings, mat)
     # Tabulate Pin Pixel
-    for img in img_arr:
-        get_pin(pix_arr, black_ll, black_ul, img)
+    area_pixel = get_pin(black_ll, black_ul, img)
 
     try:
         # Get Best Pin Pixel and image
-        non_empty_arr = [x for x in pix_arr if x != ""]
-        area_pixel = max(set(non_empty_arr), key=pix_arr.count)
         cali_area = (int(settings["Settings"]["Config"]["Pin Size"]) / 2) ** 2 * math.pi
         cali_pixel = f"{cali_area / area_pixel:.4f}"
         logger.info("Calibration Pin: %s mm^2/pixel", cali_pixel)
 
-        return img_arr[pix_arr.index(area_pixel)], cali_pixel
+        return cali_pixel
     except:
         raise Custom_Exception(
             {
@@ -48,7 +44,7 @@ def get_pin_col(settings, mat):
     return black_ll, black_ul
 
 
-def get_pin(pix_arr, black_ll, black_ul, img):
+def get_pin(black_ll, black_ul, img):
     """Return Pin ROI in image"""
     # TODO: Fixed Area for calibration pin
     img = img[800:950, 50:250]
@@ -81,6 +77,6 @@ def get_pin(pix_arr, black_ll, black_ul, img):
         for c in cnts:
             cnt_area = cv2.contourArea(c)
             if cnt_area > 300 and np.sum(black) > 10000:
-                pix_arr.append(cnt_area)
+                return cnt_area
     except:
-        pix_arr.append("")
+        return ""
