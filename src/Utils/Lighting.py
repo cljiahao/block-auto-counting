@@ -1,82 +1,56 @@
-import sys
 import socket
-from tkinter import messagebox
+import sys
+from tkinter import Toplevel
 
+from components.messagebox import CustomMessageBox
+from core.config import service_settings
 from core.logging import logger
 
 
-class Lighting:
-    """Class for Lighting Controls"""
+class LightingControl:
+    def __init__(self, parent: Toplevel) -> None:
+        self.parent = parent
+        logger.info(
+            f"Connecting to {service_settings.LIGHT_IPV4} at {service_settings.LIGHT_PORT}"
+        )
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            self.s.connect(
+                (service_settings.LIGHT_IPV4, int(service_settings.LIGHT_PORT))
+            )
+            logger.info(
+                f"Connected to {service_settings.LIGHT_IPV4} at {service_settings.LIGHT_PORT}"
+            )
+            self.light_switch()
+        except (ConnectionRefusedError, TimeoutError):
+            CustomMessageBox(
+                parent,
+                "Connection to Light Error",
+                "Conection to Lighting Controller Error. Please Restart Controller.",
+                "showerror",
+            )
+            # TODO: check if sys.exit or self.close is better
+            sys.exit()
 
-    def __init__(self, settings):
-        self.trouble = settings["Settings"]["Troubleshoot"]["Trouble"]
-        self.initialize(settings)
-
-    def initialize(self, settings):
-        """Initialize variables"""
-        if not self.trouble:
-            lightipv4 = settings["Settings"]["Address"]["LightIPv4"]
-            lightport = settings["Settings"]["Address"]["LightPORT"]
-            self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            logger.info("Connecting to %s at %s", lightipv4, lightport)
-            self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-            try:
-                self.s.connect(
-                    (
-                        lightipv4,
-                        int(lightport),
-                    )
-                )
-                logger.info("Connected to %s at %s", lightipv4, lightport)
-                self.light_switch()
-            except (ConnectionRefusedError, TimeoutError):
-                messagebox.showerror(
-                    "Connection Error",
-                    "Connection to Lighting Controller Error. \nPlease Restart Controller",
-                )
-                logger.error(
-                    "Error Connecting to %s at %s", lightipv4, lightport, exc_info=True
-                )
-                sys.exit()
-
-    def close(self):
+    def close(self) -> None:
         """Shut off Lighting to reset"""
         if hasattr(self, "s"):
             self.s.close()
 
-    def cvt_byte(self, code):
+    def _cvt_byte(self, code: str) -> bytearray:
         "Convert str to byte"
-        arr = []
-        for i in code:
-            arr.append(ord(i))
-        b_arr = bytearray(arr)
+        arr = [ord(i) for i in code]
+        return bytearray(arr)
 
-        return b_arr
-
-    def light_switch(self, on=False):
+    def light_switch(self, on: bool = False) -> None:
         """Light Switch function"""
-        if not self.trouble:
-            light_code = "@00L11D\r\n" if on else "@00L01C\r\n"
-            b_light_arr = self.cvt_byte(light_code)
-            self.s.send(b_light_arr)
-            logger.info("%s sent. Light turned %s.", b_light_arr, "on" if on else "off")
+        light_code = "@00L11D\r\n" if on else "@00L01C\r\n"
+        b_light_arr = self._cvt_byte(light_code)
+        self.s.send(b_light_arr)
+        logger.info(f"{b_light_arr} sent. Light turned {'on' if on else 'off'}.")
 
-    def light_intense(self, settings):
-        """Update lighting intensity"""
-        if not self.trouble:
-            intensity = self.intense_util(settings["Settings"]["Config"]["Lighting"])
-
-            pre_intense = f"@00F{intensity}"
-            b_arr = self.cvt_byte(pre_intense)
-            check_sum = hex(sum(b_arr))[-2:].upper()
-            command = f"{pre_intense}{check_sum}\r\n"
-
-            b_command = self.cvt_byte(command)
-            self.s.send(b_command)
-            logger.info("%s sent. Light intensity changed to %s.", b_command, intensity)
-
-    def intense_util(self, value):
+    def _intense_util(self, value: str):
         """Convert value to standard of 000 format"""
         if len(value) == 2:
             value = f"0{value}"
@@ -85,3 +59,16 @@ class Lighting:
         else:
             value = "050"  # Default
         return value
+
+    def light_intense(self, settings):
+        """Update lighting intensity"""
+        intensity = self._intense_util(settings["Settings"]["Config"]["Lighting"])
+
+        pre_intense = f"@00F{intensity}"
+        b_arr = self._cvt_byte(pre_intense)
+        check_sum = hex(sum(b_arr))[-2:].upper()
+        command = f"{pre_intense}{check_sum}\r\n"
+
+        b_command = self._cvt_byte(command)
+        self.s.send(b_command)
+        logger.info(f"{b_command} sent. Light intensity changed to {intensity}.")

@@ -10,14 +10,14 @@ from core.directory_manager import directory_manager as dm
 
 
 class MyTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
-    """Custom log handler that rotates log files daily and organizes them by month."""
+    """Custom log handler that rotates log files daily and organizes them by month"""
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         self.namer = self.change_name
 
     def change_name(self, default_name: str) -> str:
-        """Change the log filename to include the current month and year."""
+        """Change the log filename to include the current month and year"""
         file_path = Path(default_name)
         tail = file_path.name
 
@@ -38,7 +38,7 @@ logging.handlers.MyTimedRotatingFileHandler = MyTimedRotatingFileHandler
 
 
 def setup_logging() -> None:
-    """Set up logging configuration from a JSON file or default settings."""
+    """Set up logging configuration from a JSON file or default settings"""
     logging_config_path = Path(__file__).parent / "json" / "logging.json"
     if logging_config_path.exists():
         with logging_config_path.open("rt") as f:
